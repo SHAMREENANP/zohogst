@@ -1,0 +1,466 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<head>
+<style>
+  
+  h2{
+    font-size: small;
+    font-family: 'Segoe UI', Tahoma,;
+    color:#dfe4e9;
+  }
+table {
+  font-family: arial, sans-serif;
+
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #1f1c1c;
+  text-align: center;
+  padding: 4px;
+  color:#e5d7d7;
+  font-weight: 100;
+  font-size: small;
+  font-family: 'Segoe UI', Tahoma,;
+}
+table,tr {
+  border: hidden;
+ 
+}
+tr:nth-child(odd) {
+  background-color:#201919 ;
+}
+tr:nth-child(even) {
+  background-color: #8f8e8e2a;
+}
+
+
+.modal{
+    z-index: 9999;
+    overflow: scroll;
+  }
+  #aover{
+    color: rgb(214, 141, 5);
+  }
+/* #aover:hover{
+  font-weight: bold;
+} */
+tr:hover{
+  background-color: #201919;
+  font-weight: bold;
+
+}
+
+
+    /* width */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: rgb(252, 236, 217);
+
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    #selected-area{
+        font-size: 20px;
+    }
+  
+
+
+    /* .......................................... search box.............. */
+    .select-box{
+      position: relative;
+    }
+    .select-option{
+      position: relative;
+    }
+    .select-option input{
+      width: 100%;
+      cursor: pointer;
+      background-color: white;
+      color: black;
+      border-radius: 7px;
+      padding: 10px 15px;
+      border: 0 !important;
+      outline: 0 !important;
+    }
+    .select-option:after{
+      content: "";
+      border-top: 12px solid #000;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      margin-top: -8px;
+
+    }
+    .content{
+      background-color: white;
+      position: absolute;
+      color: black;
+      border-radius: 7px;
+      margin-top: 15px;
+      width: 100%;
+      z-index: 999;
+      padding: 20px;
+      display: none;
+    }
+    .search input{
+      width: 100%;
+      font-size: 17px;
+      padding: 15px;
+      outline: 0;
+      border: 1px solid #b3b3b3;
+      border-radius: 5px;
+    }
+    .options{
+      margin-top: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      padding: 0;
+      
+    }
+    .options li{
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      border-bottom: 1px solid gray;
+    }
+    .select-box.active .content{
+      display: block;
+    }
+    .select-box.active .select-option:after{
+      transform: rotate(-180deg);
+    }
+    
+
+    
+    /* .......................................... search box1.............. */
+    .select-box1{
+      position: relative;
+    }
+    .select-option1{
+      position: relative;
+    }
+    .select-option1 input{
+      width: 100%;
+      cursor: pointer;
+      background-color: white;
+      color: black;
+      border-radius: 7px;
+      padding: 10px 15px;
+      border: 0 !important;
+      outline: 0 !important;
+    }
+    .select-option1:after{
+      content: "";
+      border-top: 12px solid #000;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      margin-top: -8px;
+
+    }
+    .content1{
+      background-color: white;
+      position: absolute;
+      color: black;
+      border-radius: 7px;
+      margin-top: 15px;
+      width: 100%;
+      z-index: 999;
+      padding: 20px;
+      display: none;
+    }
+    .search1 input{
+      width: 100%;
+      font-size: 17px;
+      padding: 15px;
+      outline: 0;
+      border: 1px solid #b3b3b3;
+      border-radius: 5px;
+    }
+    .options1{
+      margin-top: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      padding: 0;
+      
+    }
+    .options1 li{
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      border-bottom: 1px solid gray;
+    }
+    .select-box1.active .content1{
+      display: block;
+    }
+    .select-box1.active .select-option1:after{
+      transform: rotate(-180deg);
+    }
+    
+</style>
+</head>
+<body>
+  <div class="container-fulid" style="position: fixed;">
+    <nav class="nav nav-pills navbar-expand-lg navbar-light " id="navabars">
+     <!-- Navbar brand or logo -->
+     <a class="navbar-brand" href="#"></a>
+     
+     <!-- Navbar content -->
+     <div class="collapse navbar-collapse" id="navbarNav">
+         <ul class="navbar-nav">
+          
+          <div class="row">
+            <div class="col-8">
+              <div class="form-group">
+              <input type="Date" name="" placeholder="">
+              <input type="Date" name="" placeholder="">
+          </div>
+   
+     <li class="nav-item dropdown" style="padding-left:650px ;">
+       <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" style="background: white; color: black;"><i class="fa fa-print"></i></a>
+       <ul class="dropdown-menu dropdown-menu-end">
+         <li>
+           <a class="printdrop" href="#" onclick="printPageContent()" style="font-size:16px;top: 2%;">Print Preference</a></li>
+       </ul>
+     </li></ul></nav><br>
+<fieldset >
+
+
+  <div class="col-md-12 " style="width: 100%;">
+    <div class="row mx-2">
+
+      <h2>1-Details of outward supplies and inward supplies liable to reverse charge</h2><br>       
+     
+<div style="overflow-y: scroll; height: 600px;">
+
+  <table class="table  text-white " style="width: 100%;">
+<table>
+  <tr >
+    <th>Nature Of Supplies</th>
+    <th>Total Taxable <br>Value</th>
+    <th>Integrated Tax	</th>
+    <th>Central Tax</th>
+    <th>State/UT Tax	</th>
+    <th>Cess	</th>
+  </tr>
+ 
+  <tr>
+    <td>Outward taxable supplies (other than zero rated, nil rated and exempted)</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+  
+  <tr>
+    <td>Outward taxable supplies (zero rated)</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>Other outward supplies (nil rated, exempted)</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>Inward supplies (liable to reverse charge)</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>Non-GST outward supplies</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+
+</table>
+<br>
+<h2>2. Details of inter-State supplies made to unregistered persons, composition dealer and UIN holders</h2>
+
+<table>
+  <tr>
+    <th>
+      </th>
+      <th colspan="2"> &nbsp;Supplies Made To Unregistered Persons
+        </th>
+        
+    <th colspan="2">Supplies Made To Composition Taxable Persons	</th></th>
+    <th colspan="2">Supplies Made To UIN Holders</th>
+  </tr>
+  <tr >
+    <th>
+      Place Of Supply (State/UT)</th>
+      <th> 
+        Total Taxable Value</th>
+        <th>Amount Of Integrated <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tax</th>  
+    <th>Total Taxable <BR>Value	</th>
+      <th>Amount Of Integrated <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tax</th>  
+     <th>Total Taxable Value	</th>
+     <th>Amount Of Integrated <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tax</th>  
+  </tr>
+ 
+  <tr>
+    <td> </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table><br>  
+<h2>3. Details of eligible Input Tax Credit</h2>     
+     
+<div style="overflow-y: scroll; height: 600px;">
+
+  <table class="table  text-white " style="width: 100%;">
+<table>
+  <tr >
+    <th>Details</th>
+    
+    <th>Integrated Tax	</th>
+    <th>Central Tax</th>
+    <th>State/UT Tax	</th>
+    <th>Cess	</th>
+  </tr>
+  <tr>
+  
+    
+    <th colspan="5" style="font-weight: 500;"><b>(A) ITC Available (whether in full or part)	</b></th>
+    
+  </tr>
+  <tr >
+    <td>(1) Import of goods</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  
+  </tr>
+  
+  <tr>
+    <td>(2) Import of services</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+  </tr>
+  <tr>
+    <td>(3) Inward supplies liable to reverse charge (other than 1 & 2 above)</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+  </tr>
+  <tr>
+    <td>(4) Inward supplies from ISD</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  
+  </tr>
+  <tr>
+    <td>(5) All other ITC</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+ 
+  </tr>
+  <tr >
+  
+    
+    <th colspan="5" style="font-weight: 500;"><b>(D) Ineleigible ITC	</b></th>
+    
+  </tr>
+  <tr >
+    <td>(1) As per section 17(5)</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  
+  </tr>
+  <tr >
+    <td>(2) Others</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+  
+  </tr>
+</table><br>
+<h2>4. Details of exempt, nil-rated and non-GST inward supplies</h2>     
+     
+<div style="overflow-y: scroll; height: 600px;">
+
+  <table class="table  text-white " style="width: 100%;">
+<table>
+  <tr >
+    <th>Nature Of Supplies</th>
+    
+    <th>Inter-State Supplies</th>
+    <th>Intra-State Supplies</th>
+  
+  </tr>
+  <tr >
+    <td>From a supplier under composition scheme, Exempt and Nil rated supply</td>
+    <td>0</td>
+    <td>0</td>
+  
+  
+  </tr>
+  <tr >
+    <td>Non GST supply</td>
+    <td>0</td>
+    <td>0</td>
+  
+  
+  </tr>
+ </table>
+</fieldset>
+{% endblock %}
+
