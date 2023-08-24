@@ -74,7 +74,47 @@ tr:hover{
         font-size: 20px;
     }
   
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: none;
+  background-color: #131111;
+ 
+}
 
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+  color: #ddd;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+  color: #1f1c1c;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+  color: #1f1c1c;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+
+  border-top: none;
+ 
+}
 
     
 </style>
@@ -92,43 +132,130 @@ tr:hover{
         });
       });
       </script>
-<style> 
-#panel, #flip {
-padding: 5px;
-text-align: center;
-background-color: #1a1a19;
 
+
+<!-- Include jQuery -->
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+
+<!-- Include jQuery.table2excel plugin -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/jquery-table2excel@1.1.0/dist/jquery.table2excel.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+<style>
+    #ui-datepicker-div {
+        width: 15rem;
+        left: 600px;
+        font-size: 1rem;
+        background-color: aliceblue;
+    }
+
+    .ui-datepicker-title {
+        font-size: .8rem
+    }
+
+    .ui-datepicker-calendar {
+        display: none;
+    }
+
+    .datepicker {
+        margin-top: 1rem;
+        display: grid;
+        justify-items: center;
+    }
+
+    select>option {
+
+        background-color: rgb(212, 212, 212);
+    }
+
+    .ui-datepicker-prev {
+        background: white;
+        cursor: pointer;
+    }
+
+    .ui-datepicker-next {
+        background: white;
+        cursor: pointer;
+    }
+
+    .ui-datepicker .ui-datepicker-buttonpane button {
+        color: white;
+        background: black;
+        font-size: .8rem;
+    }
+
+    /* .ui-datepicker .ui-datepicker-buttonpane button:hover {
+            color: white;
+            background: rgb(234, 176, 0);
+        } */
+
+    .monthYearPicker {
+        font-size: 1rem;
+        height: 1.5rem;
+        width: 12rem;
+    }
+    .bar {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+    }
+    .bar .left{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
-
-#panel {
-padding: 50px;
-display: none;
+.bar .left input{
+    height: 5vh;
 }
 </style>
-</head>
-<body>
-  <div class="container-fulid" style="position: fixed;">
-    <nav class="nav nav-pills navbar-expand-lg navbar-light " id="navabars">
-     <!-- Navbar brand or logo -->
-     <a class="navbar-brand" href="#"></a>
-     
-     <!-- Navbar content -->
-     <div class="collapse navbar-collapse" id="navbarNav">
-         <ul class="navbar-nav">
-          <div class="row">
-            <div class="col-8">
-              <div class="form-group">
-              <input type="Date" name="" placeholder="From Month/Year">
-              <input type="Date" name="" placeholder="To Month/Year">
+
+<div class="page-content">
+
+
+    <div class="card radius-15">
+        <div class="card-body">
+            <div class="bar">
+             
+                <div class=" left">
+                    <div class="px-2">
+                      
+                        <input  readonly name="FromDate" class="monthYearPicker form-control"
+                            placeholder=" From month/year">
+                    </div>
+                    <div  class="px-2">
+                       
+                        <input readonly name="ToDate" class="monthYearPicker form-control"
+                            placeholder=" From month/year">
+                    </div>
+
+                </div>
+                <div class="right">
+                
+                    
+                    <input  type="checkbox" name="selling" checked style="padding-left:700px ;"> <label >Consider non-tax as exempted</label>
+                  </div>
+                <div class="right">
+                  <button class="btn btn_print btn-outline-info"  style="background: white; color: rgb(16, 135, 46);"><i class="fa fa-print"></i></button>
+                  <button class="btn btn-outline-info text-grey" onclick="ExportToExcel('xlsx')" style="background: white; color: rgb(16, 135, 46);"><i class="fa fa-file-excel"></i></button>  
+                </div>
+            </div>
+            <div class="card radius-15">
+              <div class="card-body">
+                  <div class="card-title">
+                      
+   <h2 class="mb-0" class="text-white" style="font-size: 1rem;">GSTR-1</h2>
+                      
+                      <hr>
+                  </div>
+              </div>
           </div>
-         
+                <br>
+                <br>
+                <div class="row">
+                    <div class="col-md-10"></div>
+                    <div class="col-md-2">
          
   
       
-            <input  type="checkbox" name="selling" checked style="padding-left:700px ;"> <label >Consider non-tax as exempted</label><br><br>
-      <div class="col-md-2"class="nav-item dropdown" style="padding-left:700px ;">
-   
-          <button class="btn btn_print btn-outline-info"  style="background: white; color: rgb(16, 135, 46);"><i class="fa fa-print"></i></button>
           
           <script type="text/javascript">
               $(document).ready(function ($) {
@@ -160,10 +287,7 @@ display: none;
           });
       });
   </script>
-     <div class="btn-group col-md-2" style="padding-left:700px ;">
-      <button class="btn btn-outline-info text-grey" onclick="ExportToExcel('xlsx')" style="background: white; color: rgb(16, 135, 46);"><i class="fa fa-file-excel"></i></button>                       
-
-  </div>
+    
   <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 
   <script type="text/javascript">function ExportToExcel(type, fn, dl) {
@@ -175,7 +299,8 @@ display: none;
       }
       </script>
       
-   </nav>
+    </div>
+  </div>
 
    
                   
@@ -184,19 +309,24 @@ display: none;
 
    <div class="container-fluid" id="tbl_exporttable_to_xls"> 
 
-  <div class="card radius-15 " id="pdf-card">
-    <div class="card-body">
+  <div class="card radius-15" id="pdf-card">
+   
     
          
   <div class="col-md-12 " style="width: 100%;">
  
-
+    <div class="tab">
+      <button class="tablinks" onclick="openCity(event, 'sale')">Sale</button>
+      <button class="tablinks" onclick="openCity(event, 'Sale Return')">Sale Return</button>
+      
+    </div>
      
-      <h2 id="flip">Sale</h2>
+   
      
-
+      <div id="sale" class="tabcontent"><div class="tm-page-content">
+        <div class="table-responsive">   
   <table class="table  text-white " style="width: 100%;">
-<table  id="panel">
+
     <tr >
   
     
@@ -227,27 +357,31 @@ display: none;
  
  
   
-  <tr>
-    <td>0</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-
+  {% for i in data %}
+                        <tr class="text-center">
+                            <td>0</td>
+                            <td>{{i.customer.customerName}}</td>
+                            <td>{{i.invoice_no}}</td>
+                            <td>{{i.invoicedate}}</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>{{i.igst}}</td>
+                            <td>{{i.cgst}}</td>
+                            <td>{{i.stst}}</td>
+                            <td>{{i.t_tax}}</td>
+                            <td>0</td>
+                            
   
   </tr>
-  
-</table></div></div>
-<h2 id="flip1"> Sale Return</a></h2>
-<table  id="panel1">
+
+{% endfor %}
+</table></div></div></div></div></div></div>
+<div id="Sale Return" class="tabcontent">
+  <div class="tm-page-content">
+  <div class="table-responsive"> 
+<table class="table  text-white " style="width: 100%;">
     <tr >
   
     
@@ -279,12 +413,13 @@ display: none;
   </tr>
  
  
-  
+  {% for i in data %}
   <tr>
+   
     <td>0</td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>{{i.customer}}</td>
+    <td>{{i.invoice_no}}</td>
+    <td>{{i.invoicedate}}</td>
     <td></td>
     <td></td>
     <td></td>
@@ -297,13 +432,27 @@ display: none;
     <td></td>
     <td></td>
   </tr>
-  
+  {% endfor %}
 </table>
 </div></div>
 
 
 </div></div></div></div>
-
+<script>
+  function openCity(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+  </script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
