@@ -217,14 +217,13 @@ tr:hover{
              
                 <div class=" left">
                     <div class="px-2">
-                      
-                        <input  readonly name="FromDate" class="monthYearPicker form-control"
-                            placeholder=" From month/year">
+                      <label style="text-align:left ">From</label>
+                      <input type="date"  value="2023-01-01" /> 
                     </div>
                     <div  class="px-2">
-                       
-                        <input readonly name="ToDate" class="monthYearPicker form-control"
-                            placeholder=" From month/year">
+                      <label style="text-align:left ">To</label>
+                      <input type="date" value="2023-08-01" />
+                      
                     </div>
 
                 </div>
@@ -317,7 +316,7 @@ tr:hover{
  
     <div class="tab">
       <button class="tablinks" onclick="openCity(event, 'sale')">Sale</button>
-      <button class="tablinks" onclick="openCity(event, 'Sale Return')">Sale Return</button>
+      <button class="tablinks" onclick="openCity(event, 'Sale Return')" >Sale Return</button>
       
     </div>
      
@@ -357,26 +356,29 @@ tr:hover{
  
  
   
-  {% for i in data %}
+  {% for i in reinv %}
                         <tr class="text-center">
                             <td>0</td>
-                            <td>{{i.customer.customerName}}</td>
-                            <td>{{i.invoice_no}}</td>
-                            <td>{{i.invoicedate}}</td>
+                            <td>{{i.customer_name.customer.customerName}}</td>
+                            <td>{{i.retainer_invoice_number}}</td>
+                            <td>{{i.retainer_invoice_date}}</td>
+                            <td>{{i.total_amount}}</td>
                             <td>0</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
+  {% endfor %}    
+  {% for i in data %}   
+                            <td>{i.subtotal}</td>
+{% endfor %}  
+{% for i in invoices %} 
                             <td>{{i.igst}}</td>
                             <td>{{i.cgst}}</td>
                             <td>{{i.stst}}</td>
                             <td>{{i.t_tax}}</td>
-                            <td>0</td>
+                            <td>{{i.p_supply}}</td>
                             
-  
+ {% endfor %}
   </tr>
 
-{% endfor %}
 </table></div></div></div></div></div></div>
 <div id="Sale Return" class="tabcontent">
   <div class="tm-page-content">
@@ -413,26 +415,35 @@ tr:hover{
   </tr>
  
  
-  {% for i in data %}
+
   <tr>
    
-    <td>0</td>
-    <td>{{i.customer}}</td>
-    <td>{{i.invoice_no}}</td>
-    <td>{{i.invoicedate}}</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
+   
+    {% for i in data %}
+    <tr class="text-center">
+        <td>0</td>
+        <td>{{i.customer.customerName}}</td>
+        <td>{{i.invoice_no}}</td>
+        <td>{{i.inv_date}}</td>
+        {% endfor %}
+    {% for i in reinv %}     
+        <td>{{i.retainer_invoice_number}}</td>
+    <td>{{i.retainer_invoice_date}}</td>
+    <td>{{i.total_amount}}</td>
   {% endfor %}
+    <td></td>
+    <td></td>
+    <td></td>
+    {% for i in invoices %} 
+    <td>{{i.igst}}</td>
+    <td>{{i.cgst}}</td>
+    <td>{{i.stst}}</td>
+    <td>{{i.t_tax}}</td>
+    <td>{{i.p_supply}}</td>
+    
+{% endfor %}
+  </tr>
+ 
 </table>
 </div></div>
 
