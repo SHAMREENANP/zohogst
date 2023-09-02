@@ -218,7 +218,7 @@ tr:hover{
                 <div class=" left">
                     <div class="px-2">
                       <label style="text-align:left ">From</label>
-                      <input type="date"  value="2023-01-01" /> 
+                      <input type="date"   /> 
                     </div>
                     <div  class="px-2">
                       <label style="text-align:left ">To</label>
@@ -419,29 +419,28 @@ tr:hover{
   <tr>
    
    
-    {% for i in data %}
+
     <tr class="text-center">
         <td>0</td>
-        <td>{{i.customer.customerName}}</td>
-        <td>{{i.invoice_no}}</td>
-        <td>{{i.inv_date}}</td>
-        {% endfor %}
-    {% for i in reinv %}     
-        <td>{{i.retainer_invoice_number}}</td>
-    <td>{{i.retainer_invoice_date}}</td>
-    <td>{{i.total_amount}}</td>
-  {% endfor %}
-    <td></td>
-    <td></td>
-    <td></td>
-    {% for i in invoices %} 
-    <td>{{i.igst}}</td>
-    <td>{{i.cgst}}</td>
-    <td>{{i.stst}}</td>
-    <td>{{i.t_tax}}</td>
-    <td>{{i.p_supply}}</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
     
-{% endfor %}
+     <td></td>
+    <td></td>
+    <td></td>
+
+    <td></td>
+    <td></td>
+    <td></td>
+  
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    
+
   </tr>
  
 </table>
