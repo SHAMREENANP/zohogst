@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+
 <head>
 <style>
   
@@ -89,7 +90,7 @@ tr:hover{
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 14px 16px;
+  padding: 14px 200px;
   transition: 0.3s;
   font-size: 17px;
   color: #ddd;
@@ -230,7 +231,7 @@ tr:hover{
                 <div class="right">
                 
                     
-                    <input  type="checkbox" name="selling" checked style="padding-left:700px ;"> <label >Consider non-tax as exempted</label>
+                   
                   </div>
                 <div class="right">
                   <button class="btn btn_print btn-outline-info"  style="background: white; color: rgb(16, 135, 46);"><i class="fa fa-print"></i></button>
@@ -315,17 +316,17 @@ tr:hover{
   <div class="col-md-12 " style="width: 100%;">
  
     <div class="tab">
-      <button class="tablinks" onclick="openCity(event, 'sale')">Sale</button>
+      <button class="tablinks" onclick="openCity(event, 'sale')" id="defaultOpen">Sale</button>
       <button class="tablinks" onclick="openCity(event, 'Sale Return')" >Sale Return</button>
       
     </div>
      
-   
      
-      <div id="sale" class="tabcontent"><div class="tm-page-content">
+      <div id="sale" class="tabcontent" >
+        <div class="tm-page-content">
         <div class="table-responsive">   
   <table class="table  text-white " style="width: 100%;">
-
+  <thead>
     <tr >
   
     
@@ -353,37 +354,39 @@ tr:hover{
     <th style="text-align: center;">Cess</th>
     <td></td>
   </tr>
- 
- 
+</thead>
+<tbody>
+  <tr class="text-center">
   
   {% for i in reinv %}
-                        <tr class="text-center">
+                   
                             <td>0</td>
-                            <td>{{i.customer_name.customer.customerName}}</td>
+                            <td>{{i.name}}</td>
                             <td>{{i.retainer_invoice_number}}</td>
                             <td>{{i.retainer_invoice_date}}</td>
                             <td>{{i.total_amount}}</td>
                             <td>0</td>
-                            <td>0</td>
-  {% endfor %}    
-  {% for i in data %}   
-                            <td>{i.subtotal}</td>
-{% endfor %}  
-{% for i in invoices %} 
-                            <td>{{i.igst}}</td>
-                            <td>{{i.cgst}}</td>
-                            <td>{{i.stst}}</td>
-                            <td>{{i.t_tax}}</td>
-                            <td>{{i.p_supply}}</td>
+                            <td>0
+  {% endfor %}   </td> 
+  {% for r in data %}   
+                            <td>{{r.subtotal}}
+{% endfor %}  </td>
+{% for p in invoices %} 
+                            <td>{{p.igst}}</td>
+                            <td>{{p.cgst}}</td>
+                            <td>{{p.stst}}</td>
+                            <td>{{p.t_tax}}</td>
+                            <td>{{p.p_supply}}</td>
                             
- {% endfor %}
   </tr>
-
+ {% endfor %}
+</tbody>
 </table></div></div></div></div></div></div>
 <div id="Sale Return" class="tabcontent">
   <div class="tm-page-content">
   <div class="table-responsive"> 
 <table class="table  text-white " style="width: 100%;">
+
     <tr >
   
     
@@ -416,7 +419,6 @@ tr:hover{
  
  
 
-  <tr>
    
    
 
@@ -462,6 +464,8 @@ tr:hover{
     document.getElementById(cityName).style.display = "block";
     evt.currentTarget.className += " active";
   }
+  // Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
   </script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -475,5 +479,8 @@ tr:hover{
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet"
     type="text/css" />
-{% endblock %}
+  
+    {% endblock %}
+
+
 
