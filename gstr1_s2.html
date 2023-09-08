@@ -96,7 +96,7 @@ tr:hover{
 .tab button {
   background-color: inherit;
   float: left;
-  border: none;
+  border-right: #696565;
   outline: none;
   cursor: pointer;
   padding: 14px 200px;
@@ -107,21 +107,21 @@ tr:hover{
 
 /* Change background color of buttons on hover */
 .tab button:hover {
-  background-color: #2d3647;
+  background-color: #85868a;
   color: #1f1c1c;
 }
 
 /* Create an active/current tablink class */
 .tab button.active {
-  background-color: #ccc;
-  color: #1f1c1c;
+
+  color: WHITE;
 }
 
 /* Style the tab content */
 .tabcontent {
   display: none;
   padding: 6px 12px;
-
+ 
   border-top: none;
  
 }
@@ -259,7 +259,7 @@ tr:hover{
                 <div class="right">
                   <button class="btn btn_print btn-outline-info"  style="background: white; color: rgb(16, 135, 46);"><i class="fa fa-print"></i></button>
                   <button class="btn btn-outline-info text-grey" onclick="ExportToExcel('xlsx')" style="background: white; color: rgb(16, 135, 46);"><i class="fa fa-file-excel"></i></button>                       
-                  <button class="btn" ><a href="{% url 'reportpage' %}"  class="fa fa-close" style="background: white; color: rgb(16, 135, 46);"></a></button>
+                  <button class="btn" ><a onclick ="javascript:history.go(-1);" class="fa fa-close" style="background: white; color: rgb(16, 135, 46);"></a></button>
                 </div>
             </div>
  
@@ -399,25 +399,29 @@ tr:hover{
   {% for i in reinv %}
                    
                             <td>0</td>
-                            <td>{{i.name}}</td>
+                            <td>{{i.customer_name.customerName}}</td>
                             <td>{{i.retainer_invoice_number}}</td>
                             <td>{{i.retainer_invoice_date}}</td>
                             <td>{{i.total_amount}}</td>
                             <td>0</td>
-                            <td>0
-  {% endfor %}   </td> 
-  {% for r in data %}   
-                            <td>{{r.subtotal}}
-{% endfor %}  </td>
-{% for p in invoices %} 
+                            <td>0</td>    
+                        
+                        
+                            {% for p in invoices %} 
+                            <td>  {{p.sub_total}} </td>
+
                             <td>{{p.igst}}</td>
                             <td>{{p.cgst}}</td>
-                            <td>{{p.stst}}</td>
-                            <td>{{p.t_tax}}</td>
-                            <td>{{p.p_supply}}</td>
+                            <td>{{p.sgst}}</td>
+                            <td>{{p.tax_amount}}</td>
+                 
+                         
                             
-  </tr>
- {% endfor %}
+                           
+                            <td>{{p.p_supply}}</td>
+                          </tr>                        
+
+ {% endfor %} {% endfor %}
 </tbody>
 </table></div></div></div></div>
 
