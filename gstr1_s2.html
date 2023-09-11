@@ -6,11 +6,21 @@
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.12.4.js"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Add icon library -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
 
+
+<style>
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  color: white;
+  border-color: rgb(25, 21, 21);
+
+}
   
   h2{
     font-size: small;
@@ -24,7 +34,7 @@ table {
 }
 
 td, th {
-
+  border: 1px solid rgb(28, 25, 25);
   text-align:center;
   padding: 10px;
   color:#e5d7d7;
@@ -34,7 +44,7 @@ td, th {
 }
 table,tr {
   border: hidden;
- 
+
 }
 tr:nth-child(odd) {
   color:#e5d7d7;
@@ -54,7 +64,7 @@ tr:nth-child(even) {
   font-weight: bold;
 } */
 tr:hover{
-  background-color: #bcb68c;
+  background-color: #090909;
   font-weight: bold;
 
 }
@@ -99,9 +109,9 @@ tr:hover{
   border-right: #696565;
   outline: none;
   cursor: pointer;
-  padding: 14px 200px;
+  padding: 20px 20px;
   transition: 0.3s;
-  font-size: 17px;
+  font-size: 15px;
   color: #ddd;
 }
 
@@ -257,7 +267,7 @@ tr:hover{
   
                
                 <div class="right">
-                  <button class="btn btn_print btn-outline-info"  style="background: white; color: rgb(16, 135, 46);"><i class="fa fa-print"></i></button>
+                  <button  class="btn btn-outline-info"  aria-expanded="false" onclick="printPageContent()"  style="background: white; color: rgb(16, 135, 46);"><i class="fa fa-print" style="transform: translateX(-40%);"></i></button>
                   <button class="btn btn-outline-info text-grey" onclick="ExportToExcel('xlsx')" style="background: white; color: rgb(16, 135, 46);"><i class="fa fa-file-excel"></i></button>                       
                   <button class="btn" ><a onclick ="javascript:history.go(-1);" class="fa fa-close" style="background: white; color: rgb(16, 135, 46);"></a></button>
                 </div>
@@ -294,30 +304,34 @@ tr:hover{
                     <div class="col-md-10"></div>
                     <div class="col-md-2">
          
+                      <script>
+                        function printPageContent() {
+                          const contentToPrint = document.getElementById('contentToExport');
+                          const clonedContent = contentToPrint.cloneNode(true);
+                      
+                          // Find all the elements with the class "text" within the cloned content
+                          const textElements = clonedContent.querySelectorAll('.text');
+                          const tableElements = clonedContent.querySelectorAll('.table');
+                      
+                          // Set the text color to black for each element with the class "text"
+                          textElements.forEach(element => {
+                            element.style.color = '#000000';  // Text color (black)
+                          });
+                          tableElements.forEach(element => {
+                            element.style.color = '#000000';
+                            element.style.border ='2px solid';
+                            
+                          });
+                      
+                          // Print the cloned content
+                          const printWindow = window.open('', '_blank');
+                          printWindow.document.body.appendChild(clonedContent);
+                          printWindow.print();
+                          printWindow.close();
+                        }
+                      </script>
 
-
-          <script type="text/javascript">
-              $(document).ready(function ($) {
-                  console.log('print');
-
-                  $(document).on('click', '.btn_print', function (event) {
-                      console.log('print1');
-                      event.preventDefault();
-                      var element = document.getElementById('pdf-card');
-                      var opt =
-                      {
-                          margin: 0.5,
-                          filename: 'gstr1_s2' + '.pdf',
-                          image: { type: 'jpeg', quality: 0.98 },
-                          html2canvas: { scale: 2 },
-                          jsPDF: { unit: 'in', format: 'a3', orientation: 'portrait' }
-                      };
-                      html2pdf().set(opt).from(element).save();
-
-                  });
-
-              });
-          </script>
+     
      </div>
      <script>
       $(document).ready(function($) {
@@ -347,7 +361,7 @@ tr:hover{
 
    <div class="container-fluid" id="tbl_exporttable_to_xls"> 
 
-  <div  id="pdf-card">
+  <div id="contentToExport">
    
     
          
@@ -363,7 +377,7 @@ tr:hover{
       <div id="sale" class="tabcontent" >
         <div class="tm-page-content">
         <div class="table-responsive">   
-  <table class="table  text-white " style="width: 100%;">
+  <table class="table  text-white " id="myTable" style="width: 100%;">
   <thead>
     <tr >
   
@@ -396,32 +410,38 @@ tr:hover{
 <tbody>
   <tr class="text-center">
   
-  {% for i in reinv %}
+    {% for p in data %} 
                    
-                            <td>0</td>
-                            <td>{{i.customer_name.customerName}}</td>
-                            <td>{{i.retainer_invoice_number}}</td>
-                            <td>{{i.retainer_invoice_date}}</td>
-                            <td>{{i.total_amount}}</td>
-                            <td>0</td>
-                            <td>0</td>    
+                            <td>{{p.inv.customer.GSTIN}}</td>
+                            <td>{{p.inv.customer.customerName}}</td>
+                            <td>{{p.inv.invoice_no}}</td>
+                            <td>{{p.inv.inv_date}}</td>
+                            <td>{{p.inv.grandtotal}}</td>
+                            <td>{{p.tax}}</td>
+                            <td>{{p.rate}}</td> 
                         
-                        
-                            {% for p in invoices %} 
-                            <td>  {{p.sub_total}} </td>
+                            
+                            
 
-                            <td>{{p.igst}}</td>
-                            <td>{{p.cgst}}</td>
-                            <td>{{p.sgst}}</td>
-                            <td>{{p.tax_amount}}</td>
+                            
+  
+  
+  
+                            <td>{{p.inv.subtotal}} </td>
+
+                            <td>{{p.inv.igst}}</td>
+                            <td>{{p.inv.cgst}}</td>
+                            <td>{{p.inv.sgst}}</td>
+                            <td>{{p.inv.t_tax}}</td>
                  
-                         
+                        
                             
                            
-                            <td>{{p.p_supply}}</td>
-                          </tr>                        
-
- {% endfor %} {% endfor %}
+                            <td>{{p.inv.customer.placeofsupply}}</td>
+                    
+    </tr>                        
+ {% endfor %}    
+      
 </tbody>
 </table></div></div></div></div>
 
