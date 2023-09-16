@@ -6813,16 +6813,41 @@ def reportpage(request):
 
     return render(request,'reports_inventory.html')
 def GSTR_3Bpage(request):
-
-    return render(request,'GSTR_3B.html')
+    company = company_details.objects.get(user=request.user)
+    context={
+       
+        'company':company
+    }
+    return render(request,'GSTR_3B2.html',context)
 def GSTR_1page(request):
+    company = company_details.objects.get(user=request.user)
     data=invoice.objects.all()
     invoices=recurring_invoice.objects.all()
     reinv=RetainerInvoice.objects.all()
     context={
-        'invoice':invoices,
+        'invoices':invoices,
         'data':data,
-        'reinv':reinv
+        'reinv':reinv,
+        'company':company
     }
-    return render(request,'gstr1_s.html', context)
+    return render(request,'gstr1_s2.html', context)
 
+def gstr2_load(request):
+    company = company_details.objects.get(user=request.user)
+    purchase= Purchase_Order_items.objects.all()
+    purchaseItem=Purchase_Order_items.objects.all()
+    recur_bills=recurring_bills.objects.all()
+    recur_add_bills=recurring_bills_items.objects.all()
+  
+   
+    context={'company':company,'purchase':purchase,'purchases':purchaseItem,'recur_bills':recur_bills,'recur_add_bills':recur_add_bills}
+    return render(request,'gstr2.html',context)
+
+def inven_details(request):
+    company = company_details.objects.get(user=request.user)
+    itme=sales_item.objects.all()
+    context={
+        'itme':itme,
+        'company':company
+    }
+    return render(request,'inventorydetails.html', context)
