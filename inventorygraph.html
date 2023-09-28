@@ -2,15 +2,19 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
     /* Style for the black overlay */
     .modal {
         position: fixed;
         top: 100px;
         left: 400px;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(72, 67, 67, 0.7);
+        width: 80%;
+        height: 80%;
+        background-color: rgba(20, 17, 17, 0.7);
         /* Black semi-transparent background */
         display: flex;
         justify-content: center;
@@ -85,16 +89,16 @@
         <div class="col">
             <form action="{% url 'invenitem_graph_filter' name %}" method="post" style="margin-top: 10px;" >
                 {% csrf_token %}
-                From :<input type="date" id="d1" name="d1"  style="width: 15%; border-radius: 8px;padding: 5px; border: 3px solid rgb(200, 166, 104);" required>
-                To:<input type="date" id="d2" name="d2"  style="width: 15%; border-radius: 8px;padding: 5px;border: 3px solid rgb(224, 182, 104);" required>
-             
+                From :<input type="date" id="d1" name="d1"  style="width: 12%; border-radius: 8px;padding: 5px; border: 3px solid rgb(200, 166, 104);" required>&nbsp;&nbsp;
+                To:<input type="date" id="d2" name="d2"  style="width: 12%; border-radius: 8px;padding: 5px;border: 3px solid rgb(224, 182, 104);" required>&nbsp;&nbsp;
+                <button class=" fa fa-filter btn-warning btn-outline-light"  style="padding: 8px;border-radius: 10px;background-color:rgb(200, 166, 104);;color: white;"></button>
+                <button  style="float: right;"><a href="{% url 'inven_details' %}" class="fa fa-close"style="padding: 7px;border-radius: 5px;background-color: white;;;color:rgb(200, 166, 104);" ></a></button>
                 
             </form>
     
         </div>
         
-      
- 
+      <br>  <br>
   
           <center>
               <h6 style="font-size: 30px;color: rgb(218, 164, 48);">{{company.company_name }}</h6>
@@ -104,10 +108,10 @@
           </center>
        
       </div>
-      <hr>
+ 
 <section>
     <div class="row p-3">
-        <div class="list col-4 col-lg-3 col-md-3  col-sm-2 py-5">
+        <div class="list col-4 col-lg-4 col-md-2  col-sm-2 py-5">
             <div class="header margin-top:10px">
                 <h3>All Items</h3>
             </div>
@@ -146,7 +150,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="overview col-9 col-lg-9 col-md-10  col-sm-10 " style="background-color: rgb(46, 41, 41);">
+        <div class="overview col-7 col-lg-8 col-md-10  col-sm-10 " style="background-color: rgb(25, 23, 23);">
             <div id="overview">
                 <div class="row">
                     <div class="col">
@@ -184,7 +188,7 @@
                         new Chart(ctx, {
                           type: 'line',
                           data: {
-                            labels: [{% for name in items2 %}{% for n in allproduct %}"{{n.inv.due_date}}",{% endfor %}"{{name.ri.start}}",{% endfor %},
+                            labels: [{% for name in items2 %}{% for n in allproduct %}"{{n.inv.inv_date}}",{% endfor %}"{{name.ri.start}}",{% endfor %},
                                      ],
                             datasets: [{
                               label: '# of sold',
@@ -192,7 +196,7 @@
                                     ],
                               borderWidth: 1,
                               lineColor: 'white',
-                              borderColor: 'rgb(214, 141, 5)',
+                              borderColor: 'rgb(218, 164, 48)',
                               
                               
                             }]
@@ -202,7 +206,7 @@
                             scales: {
                               y: {
                                 beginAtZero: true
-                                
+                            
                               }
                             }
                           }
@@ -414,235 +418,7 @@
                     crossorigin="anonymous"></script> {% endcomment %}
 
                 </section>
-                <script type="text/javascript">
-                    function exportAsExcel() {
-                        const table = document.getElementById('myTable'); // Replace 'myTable' with your table's ID
-                        const wb = XLSX.utils.table_to_book(table);
-                
-                        XLSX.writeFile(wb, 'Inventory Details.xlsx');
-                    }
-                </script>
-                <script>
-                    $(document).ready(function ($) {
-                
-                        $(document).on('click', '.btn_print', function (event) {
-                            console.log('print1');
-                            event.preventDefault();
-                
-                
-                            const pdfCard = document.getElementById('pdf-card').cloneNode(true);
-                
-                            // Create a new window for printing
-                            const printWindow = window.open('', '');
-                            // pdfCard.style.color = 'black';
-                            // pdfCard.style.backgroundColor = '#243e54';
-                            var name = document.getElementById("headline").innerHTML;
-                            const pageTitle = printWindow.document.createElement('h1');
-                            pageTitle.textContent = name; // Replace 'Page Title' with your desired title text
-                            pageTitle.style.textAlign = 'center';
-                            pageTitle.style.color = 'black';
-                
-                            // Append the <h1> element to the new window's body
-                            printWindow.document.body.appendChild(pageTitle);
-                
-                            // Append the cloned 'pdf-card' div to the new window
-                            printWindow.document.body.appendChild(pdfCard);
-                
-                            // Ensure the styles are preserved by copying CSS from the original document
-                            const stylesheets = document.styleSheets;
-                            for (let i = 0; i < stylesheets.length; i++) {
-                                const stylesheet = stylesheets[i];
-                                if (stylesheet.href) {
-                                    const link = printWindow.document.createElement('link');
-                                    link.rel = 'stylesheet';
-                                    link.href = stylesheet.href;
-                                    printWindow.document.head.appendChild(link);
-                                }
-                            }
-                
-                            // Trigger the print dialog for the new window
-                            printWindow.print();
-                
-                            // Close the new window after printing
-                            printWindow.close();
-                
-                
-                        });
-                
-                    });
-                    $(document).ready(function ($) {
-                
-                
-                        $(document).on('click', '.btn_pdf', function (event) {
-                            console.log('print1');
-                            event.preventDefault();
-                            var name = document.getElementById("headline").innerHTML;
-                            var div2 = document.getElementById("div2");
-                            var element = document.getElementById('pdf-card');
-                            element.style.color = 'white';
-                            element.style.backgroundColor = '#e6dfdf2a';
-                            var opt =
-                            {
-                                margin: 1,
-                                filename: name + '.pdf',
-                                image: { type: 'png', quality: 1.0 },
-                                html2canvas: { scale: 3, useCORS: true, backgroundColor: null },
-                                jsPDF: { unit: 'in', format: 'a3', orientation: 'portrait' }
-                            };
-                            html2pdf().set(opt).from(element).save();
-                
-                        });
-                
-                    });
-                    function selectParty() {
-                        document.getElementById("pin").addEventListener("input", function () {
-                            var filterValue = this.value.toLowerCase();
-                            var table = document.getElementById("myTable");
-                            var rows = table.getElementsByTagName("tr");
-                
-                            
-                            if (document.getElementById("in1").value == '' && document.getElementById("in2").value == '') {
-                                for (var i = 1; i < rows.length; i++) { // Start from 1 to skip the table header row
-                                    
-                                    var firstColumnValue = rows[i].getElementsByTagName("td")[0].textContent.toLowerCase();
-                
-                                    if (firstColumnValue.indexOf(filterValue) > -1) {
-                
-                                        rows[i].style.display = "";
-                                    } else {
-                                        rows[i].style.display = "none";
-                                    }
-                
-                                }
-                
-                            }
-                            else {
-                                var startDate = new Date(document.getElementById("in1").value);
-                            var endDate = new Date(document.getElementById("in2").value);
-                                for (var i = 1; i < rows.length; i++) {
-                                    var firstColumnValue = rows[i].getElementsByTagName("td")[0].textContent.toLowerCase();
-                                    var row = rows[i];
-                                    var dateCell = row.cells[1];
-                                    var rowDate = new Date(dateCell.textContent);
-                
-                                    if (rowDate >= startDate && rowDate <= endDate && firstColumnValue.indexOf(filterValue) > -1) {
-                                        row.style.display = "";
-                                    } else {
-                                        row.style.display = "none";
-                                    }
-                
-                                }
-                            }
-                
-                
-                
-                
-                        });
-                    }
-                    selectParty();
-                    const inputElement = document.querySelector('input[name="party"]');
-                    const headlineElement = document.getElementById('headline');
-                    inputElement.addEventListener('input', function () {
-                
-                        const selectedValue = inputElement.value;
-                        if (selectedValue == '') {
-                            head = 'ITEM DETAILS'
-                        }
-                        else {
-                            head = selectedValue + ' DETAILS';
-                        }
-                        headlineElement.textContent = head.toUpperCase();
-                
-                    });
-                
-                
-                    // calctot(4, 'balance');
-                </script>
-                <script>
-                    function setDate() {
-                        var startDate = new Date(document.getElementById("in1").value);
-                        var endDate = new Date(document.getElementById("in2").value);
-                        var rows = table.getElementsByTagName("tr")
-                       
-                
-                        for (var i = 1; i < rows.length; i++) {
-                            var row = rows[i];
-                            
-                
-                            var dateCell = row.cells[1];
-                            var rowDate = new Date(dateCell.textContent);
-                
-                            if (rowDate >= startDate && rowDate <= endDate && firstColumnValue.indexOf(filterValue) > -1) {
-                                row.style.display = "";
-                            } else {
-                                row.style.display = "none";
-                            }
-                
-                        }
-                    }
-                    var table = document.getElementById("myTable");
-                
-                    var fromDate;
-                    $('#in1').on('change', function () {
-                        fromDate = $(this).val();
-                        $('#in2').prop('min', function () {
-                            return fromDate
-                        })
-                        var startDate = new Date(document.getElementById("in1").value);
-                        var endDate = new Date(document.getElementById("in2").value);
-                        var rows = table.getElementsByTagName("tr")
-                        var filterValue= document.getElementById("pin").value.toLowerCase()
-                
-                        for (var i = 1; i < rows.length; i++) {
-                            var firstColumnValue = rows[i].getElementsByTagName("td")[0].textContent.toLowerCase();
-                            var row = rows[i];
-                            var dateCell = row.cells[1];
-                            var rowDate = new Date(dateCell.textContent);
-                
-                            if (rowDate >= startDate && firstColumnValue.indexOf(filterValue) > -1) {
-                                row.style.display = "";
-                            } else {
-                                row.style.display = "none";
-                            }
-                
-                        }
-                        selectParty();
-                        var tdate = new Date(fromDate)
-                        var options = { year: 'numeric', month: 'long', day: 'numeric' };
-                        document.getElementById("d1").innerHTML = tdate.toLocaleDateString(undefined, options);
-                
-                    })
-                    var toDate;
-                    $('#in2').on('change', function () {
-                        toDate = $(this).val();
-                        $('#in1').prop('max', function () {
-                            return toDate
-                        })
-                        var startDate = new Date(document.getElementById("in1").value);
-                        var endDate = new Date(document.getElementById("in2").value);
-                        var rows = table.getElementsByTagName("tr");
-                        var filterValue= document.getElementById("pin").value.toLowerCase()
-                        for (var i = 1; i < rows.length; i++) {
-                            var firstColumnValue = rows[i].getElementsByTagName("td")[0].textContent.toLowerCase();
-                            var row = rows[i];
-                            var dateCell = row.cells[1];
-                            var rowDate = new Date(dateCell.textContent);
-                
-                            if (rowDate >= startDate && rowDate <= endDate && firstColumnValue.indexOf(filterValue) > -1) {
-                                row.style.display = "";
-                                console.log("display");
-                            } else {
-                                row.style.display = "none";
-                
-                            }
-                        }
-                        selectParty();
-                        var tdate = new Date(toDate)
-                        var options = { year: 'numeric', month: 'long', day: 'numeric' };
-                        document.getElementById("d2").innerHTML = "  To  " + tdate.toLocaleDateString(undefined, options);
-                
-                    })
-                
-                </script>
+               
+             
                 
                 {% endblock %}

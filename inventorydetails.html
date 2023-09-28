@@ -40,7 +40,7 @@ tr:nth-child(odd) {
 }
 tr:nth-child(even) {
   color:#100e0e;
-  background-color: #0b09092a;
+  background-color: #4940402a;
 }
 
   #aover{
@@ -129,27 +129,29 @@ tr:hover{
             <div class=" left">
           <div class="px-2">
             <label style="text-align:left ">From:</label>
-            <input name="FromDate" class="inputdate"  type="date" id="in1" >
+            <input name="FromDate" class="inputdate"  type="date" id="in1"  style="width: 70%; border-radius: 8px;padding: 5px; border: 3px solid rgb(200, 166, 104);" >
         </div>
 
         <div class="px-2">
             <label style="text-align:left ">To:</label>
-            <input name="ToDate" type="date" class="inputdate"  id="in2">
+            <input name="ToDate" type="date" class="inputdate"  id="in2" style="width: 70%; border-radius: 8px;padding: 5px; border: 3px solid rgb(200, 166, 104);" >
         </div>   </div>    
         <div class="d-flex">
-          
+            {% for i in item %}
+            <a href="{% url 'invengraph' i.Name %}" >
+                 {% endfor %}   <button class=" btn btn-outline-info"><i class="fa fa-line-chart" style="background: white; color: rgb(218, 164, 48);"></i>
+             </a>    </button>&nbsp;&nbsp;
               
-          <button class="btn btn_print btn-outline-info" style="background: white; color: rgb(218, 164, 48);"><i class="fa fa-print"></i></button>
-          <div style="width:3px;"></div>
-          <div class="dropdown">
-            <button  class="btn btn-light dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: white; color: rgb(218, 164, 48);">
-              <i class="fa fa-file-excel"></i> </button>
-          <div class="dropdown-menu" aria-labelledby="exportDropdown">
-              <button class="btn btn_pdf btn-outline-info" class="dropdown-item" style="background: rgba(0, 0, 0, 0.2); color: rgb(216, 226, 216);">pdf</button><br>
-              <button class=" btn btn-outline-info" id="export-button" onclick="exportAsExcel()"  class="dropdown-item" style="background: rgba(0, 0, 0, 0.2); color: rgb(216, 226, 216);">Excel</button>
+          <button class="btn btn_print btn-outline-info" style="background: white; color: rgb(218, 164, 48);"><i class="fa fa-print"></i></button>&nbsp;&nbsp;
       
-        </div>
-        <button class="btn" ><a onclick ="javascript:history.go(-1);" class="fa fa-close" style="background: white; color: rgb(218, 164, 48);"></a></button>
+           
+              <button class="btn btn_pdf btn-outline-info" style="background: white; color: rgb(218, 164, 48);">  <i class="fa fa-file-pdf"></i>    
+            </button>&nbsp;&nbsp;
+              <button class=" btn btn-outline-info" id="export-button" onclick="exportAsExcel()"  class="dropdown-item"  style="background: white; color: rgb(218, 164, 48);">   <i class="fa fa-file-excel"></i></button>&nbsp;&nbsp;
+             
+         
+            
+        <button class="btn" ><a onclick ="javascript:history.go(-1);" class="fa fa-close" style="background: white; color: rgb(218, 164, 48);"></a></button>&nbsp;&nbsp;
       </div>
       
       </div>
@@ -159,7 +161,7 @@ tr:hover{
             <div class="card-title" id="div2">
                 <center>
                     <h6 style="font-size: 30px;color: rgb(218, 164, 48);">{{company.company_name }}</h6>
-                    <h2 class="my-4" id="headline" style="font-size: 35px;color: rgb(218, 164, 48);">ITEM DETAILS</h2>
+                    <h2 class="my-4" id="headline" style="font-size: 35px;color: rgb(218, 164, 48);">INVENTORY DETAILS</h2>
                     <div class="display">
                         <div id="d1" style="display: inline-block;"></div>-
                         <div id="d2" style="display: inline-block;"></div>
@@ -176,15 +178,10 @@ tr:hover{
                        
                         <input name="party" list="party" class="form-control" id="pin" placeholder="Search Items..." style="color: rgb(255, 255, 255);background: transparent;width: 20vw;">
                         <datalist id="party" >
-                          {% for i in inv %}
-                          <a class="text-white" href="{% url 'invengraph' i.product %}">  <option value="{{i.product}}" ></a>
+                          {% for i in item %}
+                           <option value="{{i.Name}}" >
                               {% endfor %}
-                              {% for i in recur %}
-                          <option value="{{i.iname}}">
-                              {% endfor %}
-                              {% for i in pars %}
-                              <option value="{{i.item}}">
-                                  {% endfor %}
+                           
                       </datalist>
                     </div>
 
@@ -195,7 +192,7 @@ tr:hover{
     <div class="card radius-15 print-only" id="pdf-card">
       <div class="card-body">
             <div class="container-fluid">
-
+                <div class="table-responsive"  > 
                 <table class="table table-responsive-md mt-4 table-hover table-bordered"
                     style="background-color: rgba(0, 0, 0, 0.2);" id="myTable">
                     <thead >
@@ -213,14 +210,33 @@ tr:hover{
                     </thead>
             
                   <tbody>
+                     
+                    {% for i in credit %}          
+                    <tr class="text-center" id="tb">
+               
+                  
+                      <td style="display: none;" id="tb">{{i.item_name}}</td>              
+                      <td><a class="text-white" href="{% url 'invengraph' i.item_name %}">{{i.creditnote.creditnote_date}}</a></td>
+                      <td>CreditNote</td>     
+                      
+                   
+                      <td>{{i.quantity}}</td>
+                 
+                   
+                      <td>0</td>
+                      <td>0</td>
+                      <td>0</td>
+              
+                    </tr>  
+                      {% endfor %} 
                     {% for p in inv %} 
-                    <tr class="text-center" style="display: none;" id="tb">
+                    <tr class="text-center" id="tb">
                  
                                       
                   
                       <td id="tb" style="display: none;" >{{p.product}}</td>              
                       <td><a class="text-white" href="{% url 'invengraph' p.product %}">{{p.inv.inv_date }}</a></td>
-                      <td><a class="text-white" href="{% url 'invengraph' p.product %}">invoice</a></td>     
+                      <td><a class="text-white" href="{% url 'invengraph' p.product %}">Invoice</a></td>     
                       
                    
                       <td>{{p.quantity}}</td>
@@ -234,7 +250,7 @@ tr:hover{
                     {% endfor %} 
                     {% for p in recur %} 
                                         
-                      <tr class="text-center" style="display: none;" id="tb">
+                      <tr class="text-center" id="tb">
                  
                     
                         <td style="display: none;" id="tb">{{p.iname}}</td>              
@@ -251,13 +267,73 @@ tr:hover{
                 
                       </tr>  
                         {% endfor %} 
-                        {% for p in pars %} 
-                        <tr class="text-center" style="display: none;" id="tb">
+                        {% for p in estim %} 
+                                        
+                        <tr class="text-center" id="tb">
+                   
+                      
+                          <td style="display: none;" id="tb">{{p.item_name}}</td>              
+                          <td><a class="text-white" href="{% url 'invengraph' p.item_name %}">{{p.estimate.estimate_date}}</a></td>
+                          <td>Estimates</td>     
+                          
+                       
+                          <td>{{p.quantity}}</td>
+                     
+                       
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                  
+                        </tr>  
+                          {% endfor %} 
+
+                          {% for p in sale %} 
+                                        
+                          <tr class="text-center" id="tb">
+                     
+                        
+                            <td style="display: none;" id="tb">{{p.product}}</td>              
+                            <td><a class="text-white" href="{% url 'invengraph' p.product %}">{{p.sale.sales_date}}</a></td>
+                            <td> SalesOrder</td>     
+                            
+                         
+                            <td>{{p.quantity}}</td>
+                       
+                         
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                    
+                          </tr>  
+                            {% endfor %} 
+                            {% for p in challan %} 
+                                        
+                            <tr class="text-center" id="tb">
+                       
+                          
+                              <td style="display: none;" id="tb">{{p.item_name}}</td>              
+                              <td><a class="text-white" href="{% url 'invengraph' p.item_name %}">{{p.chellan.chellan_date}}</a></td>
+                              <td>DeliveryChellan</td>     
+                              
+                           
+                              <td>{{p.quantity}}</td>
+                         
+                           
+                              <td>0</td>
+                              <td>0</td>
+                              <td>0</td>
+                      
+                            </tr>  
+                              {% endfor %} 
+                             
+                        
+                              {% for p in pars %} 
+                        <tr class="text-center"  id="tb">
                      
                                           
                       
                           <td  style="display: none;" id="tb">{{p.item}}</td>              
-                          <td>{{p.PO.Ord_date }}</td>
+                          <td>{{p.PO.Ord_date}}</td>
                           <td>Purchase_Order</td>     
                           
                        
@@ -270,6 +346,85 @@ tr:hover{
                   
                         </tr>  
                           {% endfor %} 
+                          
+                          {% for p in vencredit %} 
+                          <tr class="text-center"  id="tb">
+                       
+                                            
+                        
+                            <td  style="display: none;" id="tb">{{p.product}}</td>              
+                            <td>{{p.inv.vendor_date}}</td>
+                            <td>Vendor_Credits</td>     
+                            
+                         
+                            <td>0</td>
+                       
+                         
+                            <td>{{p.quantity}}</td>
+                            <td>0</td>
+                            <td>0</td>
+                    
+                          </tr>  
+                            {% endfor %} 
+
+                            {% for p in bills %} 
+                            <tr class="text-center"  id="tb">
+                         
+                                              
+                          
+                              <td  style="display: none;" id="tb">{{p.item_name}}</td>              
+                              <td>{{p.purchase_bill.bill_date}}</td>
+                              <td>Bills</td>     
+                              
+                           
+                              <td>0</td>
+                         
+                           
+                              <td>{{p.quantity}}</td>
+                              <td>0</td>
+                              <td>0</td>
+                      
+                            </tr>  
+                              {% endfor %} 
+
+                              {% for p in recubills %} 
+                              <tr class="text-center"  id="tb">
+                           
+                                                
+                            
+                                <td  style="display: none;" id="tb">{{p.item}}</td>              
+                                <td>{{p.recur_bills.start_date}}</td>
+                                <td>Recurring_Bills</td>     
+                                
+                             
+                                <td>0</td>
+                           
+                             
+                                <td>{{p.quantity}}</td>
+                                <td>0</td>
+                                <td>0</td>
+                        
+                              </tr>  
+                                {% endfor %} 
+                                {% for p in vendorbill %} 
+                                <tr class="text-center"  id="tb">
+                             
+                                                  
+                              
+                                  <td  style="display: none;" id="tb">{{p.item}}</td>              
+                                  <td>{{p.recur_bills.vendor_date}}</td>
+                                  <td>Vendor_Credits_Bills</td>     
+                                  
+                               
+                                  <td>0</td>
+                             
+                               
+                                  <td>{{p.quantity}}</td>
+                                  <td>0</td>
+                                  <td>0</td>
+                          
+                                </tr>  
+                                  {% endfor %}
                     </tbody>
                 </table>
            
@@ -411,7 +566,7 @@ tr:hover{
 
         const selectedValue = inputElement.value;
         if (selectedValue == '') {
-            head = 'ITEM DETAILS'
+            head = 'INVENTORY DETAILS'
         }
         else {
             head = selectedValue + ' DETAILS';
