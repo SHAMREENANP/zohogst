@@ -15,71 +15,25 @@
     font-family: 'Segoe UI', Tahoma,;
     color:#dfe4e9;
   }
-table {
-  font-family: arial, sans-serif;
-
-  width: 100%;
-}
-
-td, th {
-  border: 1px solid #1f1c1c;
-  text-align: left;
-  padding: 4px;
-  color:white;
-  font-weight: 100;
-  font-size: small;
-  font-family: 'Segoe UI', Tahoma,;
-}
-table,tr {
-  border: hidden;
+  .card{
+        background: none;
+    }
+    tbody tr td{
+        border: none;
+        border-top: none;
+        border-style: none;
+        color:azure;
+        justify-content: center;
+    }
  
+    tr:hover{
+background-color: rgb(92, 84, 84);
+cursor: pointer
 }
-tr:nth-child(odd) {
-  color:#e5d7d7;
-  background-color:#201919 ;
-}
-tr:nth-child(even) {
-  color:#100e0e;
-  background-color: #4940402a;
-}
-
-  #aover{
-    color: #efe4e4;
-  }
-/* #aover:hover{
-  font-weight: bold;
-} */
 tr:hover{
-  background-color: rgb(227, 224, 224);
-  font-weight: bold;
-
+  background-color : rgb(71, 71, 78);
+cursor: pointer
 }
-
-
-    /* width */
-    ::-webkit-scrollbar {
-        width: 10px;
-    }
-
-    /* Track */
-    ::-webkit-scrollbar-track {
-        background: rgb(108, 108, 104);
-
-    }
-
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-        background: #e0dcdc;
-    }
-
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-        background: #b6abab;
-    }
-    #selected-area{
-        font-size: 20px;
-    }
-  
     .btn {
   background-color: white;
   border: none;
@@ -189,38 +143,38 @@ tr:hover{
                
         </div>
         <hr>
-    <div class="card radius-15 print-only" id="pdf-card">
+    <div  id="pdf-card">
       <div class="card-body">
             <div class="container-fluid">
                 <div class="table-responsive"  > 
                 <table class="table table-responsive-md mt-4 table-hover table-bordered"
-                    style="background-color: rgba(0, 0, 0, 0.2);" id="myTable">
+                    id="myTable" >
                     <thead >
                
-                      <tr style="background-color: rgba(0, 0, 0, 0.2);color: white" >
+                      <tr  >
                         <th class="hidden"></th>
-                        <th>Date</th>
-                        <th class="table">Type</th>
+                        <th style=" color: rgb(218, 164, 48);">Date</th>
+                        <th class="table" style="color: rgb(218, 164, 48);text-align: center;">Type</th>
                      
-                        <th class="table">Sale Quantity</th>
-                        <th class="table">Purchase Quantity	</th>
-                        <th class="table">Adjustment Quantity	</th>	
-                        <th class="table">Closing Quantity</th>
+                        <th class="table" style=" color: rgb(218, 164, 48);">Sale Quantity</th>
+                        <th class="table" style=" color: rgb(218, 164, 48);">Purchase Quantity	</th>
+                        <th class="table" style="color: rgb(218, 164, 48);">Adjustment Quantity	</th>	
+                        <th class="table" style="color: rgb(218, 164, 48);">Closing Quantity</th>
                       </tr> 
                     </thead>
             
                   <tbody>
                      
-                    {% for i in credit %}          
+                    {% for p in credit %}          
                     <tr class="text-center" id="tb">
                
                   
-                      <td style="display: none;" id="tb">{{i.item_name}}</td>              
-                      <td><a class="text-white" href="{% url 'invengraph' i.item_name %}">{{i.creditnote.creditnote_date}}</a></td>
-                      <td>CreditNote</td>     
+                      <td style="display: none;" id="tb">{{p.item_name}}</td>              
+                      <td><a class="text-white" href="{% url 'invengraph' p.item_name%}">{{p.creditnote.creditnote_date}}</a></td>
+                      <td><a class="text-white" href="{% url 'invengraph' p.item_name %}">CreditNote</a></td>     
                       
                    
-                      <td>{{i.quantity}}</td>
+                      <td>{{p.quantity}}</td>
                  
                    
                       <td>0</td>

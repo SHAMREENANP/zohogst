@@ -54,43 +54,17 @@
         color: white;
     }
 </style>
-<style>
-    .bar {
-        align-items: center;
-        display: flex;
-        justify-content: space-between;
-    }
 
-    .bar .left {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-
-    .bar .left input {
-        height: 5vh;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    @media print and (color) {
-        * {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-    }
-</style>
 <style>body{
     background-color: #161616;  
   }
   
   #myChart {	
-     width		: 100%;
+     width		: 500%;
       height		: 500px;
-      background-color: #161616;  
+      background-color: #1e1919;  
   }
-  
+
   .amcharts-graph-g2 .amcharts-graph-stroke {
     stroke-dasharray: 3px 3px;
     stroke-linejoin: round;
@@ -141,8 +115,8 @@
     transition: all .3s .3s ease-out;
   }
   .amcharts-graph-column-front:hover {
-    fill: #496375;
-    stroke: #496375;
+    fill: #394349;
+    stroke: #2d3438;
     -webkit-transition: all .3s ease-out;
     transition: all .3s ease-out;
   }
@@ -172,13 +146,14 @@
           stroke-dashoffset: 0%;
       }
   }
-                                  </style>
+    </style>
 <script src="https://www.amcharts.com/lib/3/amcharts.js?x"></script>
 <script src="https://www.amcharts.com/lib/3/serial.js?x"></script>
 <script src="https://www.amcharts.com/lib/3/themes/dark.js"></script>
 
 
- 
+
+    <div class="col-md-4"></div>
       <div class="card-title" id="div2">
         <div class="col">
             <form action="{% url 'invenitem_graph_filter' name %}" method="post" style="margin-top: 10px;" >
@@ -186,13 +161,13 @@
                 From :<input type="date" id="d1" name="d1"  style="width: 12%; border-radius: 8px;padding: 5px; border: 3px solid rgb(200, 166, 104);" required>&nbsp;&nbsp;
                 To:<input type="date" id="d2" name="d2"  style="width: 12%; border-radius: 8px;padding: 5px;border: 3px solid rgb(224, 182, 104);" required>&nbsp;&nbsp;
                 <button class=" fa fa-filter btn-warning btn-outline-light"  style="padding: 8px;border-radius: 10px;background-color:rgb(200, 166, 104);;color: white;"></button>
-                <button  style="float: right;"><a href="{% url 'inven_details' %}" class="fa fa-close"style="padding: 7px;border-radius: 5px;background-color: white;;;color:rgb(200, 166, 104);" ></a></button>
+              
                 
             </form>
     
-        </div>
+        </div></div>   
         
-      <br>  <br>
+   
   
           <center>
               <h6 style="font-size: 30px;color: rgb(218, 164, 48);">{{company.company_name }}</h6>
@@ -203,15 +178,32 @@
        
       </div>
  
-<section>
-    <div class="row p-3">
-        <div class="list col-4 col-lg-4 col-md-2  col-sm-2 py-5">
-            <div class="header margin-top:10px">
-                <h3>All Items</h3>
+
+        
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            
+                        </div>
+                    
+                       
+                    </div>
+             
+         
+                <div class="card-body">
+                    <div style="margin-top: 20px; color: white;">
+                        <canvas id="myChart" style="color: white;"></canvas>
+                      </div>      </div> </div>
+            
+
+    <div class="card-body">
+            <div class="header margin-top:10px">   <br><BR>  <br><BR>  
+                <button  style="float: right;"><a href="{% url 'inven_details' %}" class="fa fa-close"style="padding: 7px;border-radius: 5px;background-color: white;;;color:rgb(200, 166, 104);" ></a></button>
+                <br><BR>  <br><BR>  
+          
             </div>
             <div class="searchbar" style="display: flex;">
                 <input type="text" id="searchInput" class="form-control bg-dark" placeholder="Search Items..."
-                style="color: rgb(255, 255, 255);background: transparent;width: 20vw;">
+                style="color: rgb(255, 255, 255);background: transparent;width: 10vw;">
                 <!-- <a class="btn btn-primary mx-1" href="" data-bs-toggle="dropdown" aria-haspopup="true"
           aria-expanded="false" role="button">
           <i class="fa fa-filter"></i>
@@ -244,36 +236,6 @@
                 </tbody>
             </table>
         </div>
-        <div class="overview col-7 col-lg-8 col-md-10  col-sm-10 " style="background-color: rgb(25, 23, 23);">
-            <div id="overview">
-                <div class="row">
-                    <div class="col">
-                        
-                        <!-- {% for name in allproduct %}
-                         {{ forloop.counter }}
-                            
-                            {% if forloop.first %} -->
-                            
-                             
-                             
-                              
-                            <!-- {% endif %}  
-                        {% endfor %} -->
-                        
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            
-                        </div>
-                    
-                       
-                    </div>
-              
-                    
-                    <div style="margin-top: 20px; color: white;">
-                        <canvas id="myChart" style="color: white;"></canvas>
-                      </div>
-                      
                       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                       
                       <script>
@@ -282,11 +244,11 @@
                         new Chart(ctx, {
                           type: 'line',
                           data: {
-                            labels: [{% for name in items2 %}{% for n in allproduct %}"{{n.inv.inv_date}}",{% endfor %}"{{name.ri.start}}",{% endfor %},
+                            labels: [{% for name in items2 %}{% for n in allproduct %}"{{n.inv.inv_date | date:'Y-m-d'}}",{% endfor %}"{{name.ri.start | date:'Y-m-d'}}",{% endfor %},
                                      ],
                             datasets: [{
                               label: '# of sold',
-                              data: [{% for name in items2  %}{% for n in allproduct  %}"{{n.quantity}}",{% endfor %}"{{name.quantity}}",{% endfor %},
+                              data: [{% for name in items2  %}{% for n in allproduct  %}"{{n.quantity}}","0",{% endfor %}"{{name.quantity}}","0",{% endfor %},
                                     ],
 
                             
@@ -307,6 +269,7 @@
                             }
                           }
                         });
+                        
                       </script>
 
 
