@@ -161,36 +161,17 @@ cursor: pointer
                       </tr> 
                     </thead>
             
-                  <tbody>
-                     
-                   
-                    {% for p in inv %} 
-                    <tr class="text-center" id="tb">
-                 
-                                      
-                  
-                      <td id="tb" style="display: none;" >{{p.product}}</td>              
-                      <td><a class="text-white" href="{% url 'inventorysalegraph' %}">{{p.inv.inv_date }}</a></td>
-                      <td><a class="text-white" href="{% url 'inventorysalegraph' %}">Invoice</a></td>     
-                      
-                   
-                      <td>{{p.quantity}}</td>
-                 
-                   
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-              
-                    </tr>  
-                    {% endfor %} 
-                    {% for p in recur %} 
-                                        
+                    <tbody>
+                                   
+                                 
+                      {% for p in inv %} 
                       <tr class="text-center" id="tb">
-                 
+                   
+                                        
                     
-                        <td style="display: none;" id="tb">{{p.iname}}</td>              
-                        <td><a class="text-white" href="{% url 'inventorysalegraph' %}">{{p.ri.start}}</a></td>
-                        <td><a class="text-white" href="{% url 'inventorysalegraph' %}">Recurring_Invoice</a></td>     
+                        <td id="tb" style="display: none;" >{{p.product}}</td>              
+                        <td><a class="text-white" href="{% url 'inventorysalegraph' %}">{{p.inv.inv_date| date:'Y-m-d' }}</a></td>
+                        <td><a class="text-white" href="{% url 'inventorysalegraph' %}">Invoice</a></td>     
                         
                      
                         <td>{{p.quantity}}</td>
@@ -201,15 +182,15 @@ cursor: pointer
                         <td>0</td>
                 
                       </tr>  
-                        {% endfor %} 
-                        {% for p in estim %} 
-                                        
+                      {% endfor %} 
+                      {% for p in recur %} 
+                                          
                         <tr class="text-center" id="tb">
                    
                       
-                          <td style="display: none;" id="tb">{{p.item_name}}</td>              
-                          <td><a class="text-white" href="{% url 'inventorysalegraph' %}">{{p.estimate.estimate_date}}</a></td>
-                          <td><a class="text-white" href="{% url 'inventorysalegraph' %}">Estimates</a></td>     
+                          <td style="display: none;" id="tb">{{p.iname}}</td>              
+                          <td><a class="text-white" href="{% url 'inventorysalegraph' %}">{{p.ri.start| date:'Y-m-d'}}</a></td>
+                          <td><a class="text-white" href="{% url 'inventorysalegraph' %}">Recurring_Invoice</a></td>     
                           
                        
                           <td>{{p.quantity}}</td>
@@ -221,15 +202,14 @@ cursor: pointer
                   
                         </tr>  
                           {% endfor %} 
-
-                          {% for p in sale %} 
-                                        
+                          {% for p in estim %} 
+                                          
                           <tr class="text-center" id="tb">
                      
                         
-                            <td style="display: none;" id="tb">{{p.product}}</td>              
-                            <td><a class="text-white" href="{% url 'inventorysalegraph' %}">{{p.sale.sales_date}}</a></td>
-                            <td> <a class="text-white" href="{% url 'inventorysalegraph' %}">Sales_Order</a></td>     
+                            <td style="display: none;" id="tb">{{p.item_name}}</td>              
+                            <td><a class="text-white" href="{% url 'inventorysalegraph' %}">{{p.estimate.estimate_date| date:'Y-m-d'}}</a></td>
+                            <td><a class="text-white" href="{% url 'inventorysalegraph' %}">Estimates</a></td>     
                             
                          
                             <td>{{p.quantity}}</td>
@@ -241,14 +221,15 @@ cursor: pointer
                     
                           </tr>  
                             {% endfor %} 
-                            {% for p in challan %} 
-                                        
+  
+                            {% for p in sale %} 
+                                          
                             <tr class="text-center" id="tb">
                        
                           
-                              <td style="display: none;" id="tb">{{p.item_name}}</td>              
-                              <td><a class="text-white" href="{% url 'inventorysalegraph' %}">{{p.chellan.chellan_date}}</a></td>
-                              <td><a class="text-white" href="{% url 'inventorysalegraph' %}">Delivery_Chellan</a></td>     
+                              <td style="display: none;" id="tb">{{p.product}}</td>              
+                              <td><a class="text-white" href="{% url 'inventorysalegraph' %}">{{p.sale.sales_date| date:'Y-m-d'}}</a></td>
+                              <td> <a class="text-white" href="{% url 'inventorysalegraph' %}">Sales_Order</a></td>     
                               
                            
                               <td>{{p.quantity}}</td>
@@ -260,17 +241,17 @@ cursor: pointer
                       
                             </tr>  
                               {% endfor %} 
-                             
-                              {% for i in credit %}          
+                              {% for p in challan %} 
+                                          
                               <tr class="text-center" id="tb">
                          
                             
-                                <td  style="display: none;" id="tb">{{i.item_name }}</td>              
-                                <td><a class="text-white" href="{% url 'inventorysalegraph' %}">{{i.creditnote.creditnote_date}}</a></td>
-                                <td><a class="text-white" href="{% url 'inventorysalegraph' %}">Credit_Note</a></td>     
+                                <td style="display: none;" id="tb">{{p.item_name}}</td>              
+                                <td><a class="text-white" href="{% url 'inventorysalegraph' %}">{{p.chellan.chellan_date| date:'Y-m-d'}}</a></td>
+                                <td><a class="text-white" href="{% url 'inventorysalegraph' %}">Delivery_Chellan</a></td>     
                                 
                              
-                                <td>{{i.quantity}}</td>
+                                <td>{{p.quantity}}</td>
                            
                              
                                 <td>0</td>
@@ -279,34 +260,33 @@ cursor: pointer
                         
                               </tr>  
                                 {% endfor %} 
-                              {% for p in pars %} 
-                        <tr class="text-center"  id="tb">
-                     
-                                          
-                      
-                          <td  style="display: none;" id="tb">{{p.item}}</td>              
-                          <td>{{p.PO.Ord_date}}</td>
-                          <td>Purchase_Order</td>     
+                               
+                                {% for i in credit %}          
+                                <tr class="text-center" id="tb">
+                           
+                              
+                                  <td  style="display: none;" id="tb">{{i.item_name }}</td>              
+                                  <td><a class="text-white" href="{% url 'inventorysalegraph' %}">{{i.creditnote.creditnote_date| date:'Y-m-d'}}</a></td>
+                                  <td><a class="text-white" href="{% url 'inventorysalegraph' %}">Credit_Note</a></td>     
+                                  
+                               
+                                  <td>{{i.quantity}}</td>
+                             
+                               
+                                  <td>0</td>
+                                  <td>0</td>
+                                  <td>0</td>
                           
-                       
-                          <td>0</td>
-                     
-                       
-                          <td>{{p.quantity}}</td>
-                          <td>0</td>
-                          <td>0</td>
-                  
-                        </tr>  
-                          {% endfor %} 
-                          
-                          {% for p in vencredit %} 
+                                </tr>  
+                                  {% endfor %} 
+                                {% for p in pars %} 
                           <tr class="text-center"  id="tb">
                        
                                             
                         
-                            <td  style="display: none;" id="tb">{{p.product}}</td>              
-                            <td>{{p.inv.vendor_date}}</td>
-                            <td>Vendor_Credits</td>     
+                            <td  style="display: none;" id="tb">{{p.item}}</td>              
+                            <td>{{p.PO.Ord_date| date:'Y-m-d'}}</td>
+                            <td>Purchase_Order</td>     
                             
                          
                             <td>0</td>
@@ -318,15 +298,15 @@ cursor: pointer
                     
                           </tr>  
                             {% endfor %} 
-
-                            {% for p in bills %} 
+                            
+                            {% for p in vencredit %} 
                             <tr class="text-center"  id="tb">
                          
                                               
                           
-                              <td  style="display: none;" id="tb">{{p.item_name}}</td>              
-                              <td>{{p.purchase_bill.bill_date}}</td>
-                              <td>Bills</td>     
+                              <td  style="display: none;" id="tb">{{p.product}}</td>              
+                              <td>{{p.inv.vendor_date| date:'Y-m-d'}}</td>
+                              <td>Vendor_Credits</td>     
                               
                            
                               <td>0</td>
@@ -338,15 +318,15 @@ cursor: pointer
                       
                             </tr>  
                               {% endfor %} 
-
-                              {% for p in recubills %} 
+  
+                              {% for p in bills %} 
                               <tr class="text-center"  id="tb">
                            
                                                 
                             
-                                <td  style="display: none;" id="tb">{{p.item}}</td>              
-                                <td>{{p.recur_bills.start_date}}</td>
-                                <td>Recurring_Bills</td>     
+                                <td  style="display: none;" id="tb">{{p.item_name}}</td>              
+                                <td>{{p.purchase_bill.bill_date| date:'Y-m-d'}}</td>
+                                <td>Bills</td>     
                                 
                              
                                 <td>0</td>
@@ -358,14 +338,15 @@ cursor: pointer
                         
                               </tr>  
                                 {% endfor %} 
-                                {% for p in vendorbill %} 
+  
+                                {% for p in recubills %} 
                                 <tr class="text-center"  id="tb">
                              
                                                   
                               
                                   <td  style="display: none;" id="tb">{{p.item}}</td>              
-                                  <td>{{p.recur_bills.vendor_date}}</td>
-                                  <td>Vendor_Credits_Bills</td>     
+                                  <td>{{p.recur_bills.start_date| date:'Y-m-d'}}</td>
+                                  <td>Recurring_Bills</td>     
                                   
                                
                                   <td>0</td>
@@ -376,8 +357,27 @@ cursor: pointer
                                   <td>0</td>
                           
                                 </tr>  
-                                  {% endfor %}
-                    </tbody>
+                                  {% endfor %} 
+                                  {% for p in vendorbill %} 
+                                  <tr class="text-center"  id="tb">
+                               
+                                                    
+                                
+                                    <td  style="display: none;" id="tb">{{p.item}}</td>              
+                                    <td>{{p.recur_bills.vendor_date| date:'Y-m-d'}}</td>
+                                    <td>Vendor_Credits_Bills</td>     
+                                    
+                                 
+                                    <td>0</td>
+                               
+                                 
+                                    <td>{{p.quantity}}</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                            
+                                  </tr>  
+                                    {% endfor %}
+                      </tbody>
                 </table>
            
 
@@ -497,7 +497,7 @@ cursor: pointer
                     var dateCell = row.cells[1];
                     var rowDate = new Date(dateCell.textContent);
 
-                    if (rowDate >= startDate && rowDate <= endDate && firstColumnValue.indexOf(filterValue) > -1) {
+                    if (rowDate >= startDate && rowDate <= endDate ) {
                         row.style.display = "";
                     } else {
                         row.style.display = "none";
@@ -535,16 +535,16 @@ cursor: pointer
         var startDate = new Date(document.getElementById("in1").value);
         var endDate = new Date(document.getElementById("in2").value);
         var rows = table.getElementsByTagName("tr")
-
+       
 
         for (var i = 1; i < rows.length; i++) {
             var row = rows[i];
-
+            
 
             var dateCell = row.cells[1];
             var rowDate = new Date(dateCell.textContent);
 
-            if (rowDate >= startDate && rowDate <= endDate && firstColumnValue.indexOf(filterValue) >= 0) {
+            if (rowDate >= startDate && rowDate <= endDate) {
                 row.style.display = "";
             } else {
                 row.style.display = "none";
@@ -563,7 +563,7 @@ cursor: pointer
         var startDate = new Date(document.getElementById("in1").value);
         var endDate = new Date(document.getElementById("in2").value);
         var rows = table.getElementsByTagName("tr")
-        var filterValue = document.getElementById("pin").value.toLowerCase()
+        var filterValue= document.getElementById("pin").value.toLowerCase()
 
         for (var i = 1; i < rows.length; i++) {
             var firstColumnValue = rows[i].getElementsByTagName("td")[0].textContent.toLowerCase();
@@ -571,7 +571,7 @@ cursor: pointer
             var dateCell = row.cells[1];
             var rowDate = new Date(dateCell.textContent);
 
-            if (rowDate >= startDate && firstColumnValue.indexOf(filterValue) > -1) {
+            if (rowDate >= startDate) {
                 row.style.display = "";
             } else {
                 row.style.display = "none";
@@ -593,14 +593,14 @@ cursor: pointer
         var startDate = new Date(document.getElementById("in1").value);
         var endDate = new Date(document.getElementById("in2").value);
         var rows = table.getElementsByTagName("tr");
-        var filterValue = document.getElementById("pin").value.toLowerCase()
+        var filterValue= document.getElementById("pin").value.toLowerCase()
         for (var i = 1; i < rows.length; i++) {
             var firstColumnValue = rows[i].getElementsByTagName("td")[0].textContent.toLowerCase();
             var row = rows[i];
             var dateCell = row.cells[1];
             var rowDate = new Date(dateCell.textContent);
 
-            if (rowDate >= startDate && rowDate <= endDate && firstColumnValue.indexOf(filterValue) >= 1) {
+            if (rowDate >= startDate && rowDate <= endDate ) {
                 row.style.display = "";
                 console.log("display");
             } else {
@@ -616,6 +616,7 @@ cursor: pointer
     })
 
 </script>
+
 
 
 

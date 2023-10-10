@@ -84,105 +84,16 @@ cursor: pointer
         }
     }
 </style>
-<style>
-  
-  #myChart {	
-     width		: 500%;
-      height		: 500px;
-      background-color: #1e1919;  
-  }
 
-  .amcharts-graph-g2 .amcharts-graph-stroke {
-    stroke-dasharray: 3px 3px;
-    stroke-linejoin: round;
-    stroke-linecap: round;
-    -webkit-animation: am-moving-dashes 1s linear infinite;
-    animation: am-moving-dashes 1s linear infinite;
-  }
-  
-  @-webkit-keyframes am-moving-dashes {
-    100% {
-      stroke-dashoffset: -31px;
-    }
-  }
-  @keyframes am-moving-dashes {
-    100% {
-      stroke-dashoffset: -31px;
-    }
-  }
-  
-  
-  .lastBullet {
-    -webkit-animation: am-pulsating 1s ease-out infinite;
-    animation: am-pulsating 1s ease-out infinite;
-  }
-  @-webkit-keyframes am-pulsating {
-    0% {
-      stroke-opacity: 1;
-      stroke-width: 0px;
-    }
-    100% {
-      stroke-opacity: 0;
-      stroke-width: 50px;
-    }
-  }
-  @keyframes am-pulsating {
-    0% {
-      stroke-opacity: 1;
-      stroke-width: 0px;
-    }
-    100% {
-      stroke-opacity: 0;
-      stroke-width: 50px;
-    }
-  }
-  
-  .amcharts-graph-column-front {
-    -webkit-transition: all .3s .3s ease-out;
-    transition: all .3s .3s ease-out;
-  }
-  .amcharts-graph-column-front:hover {
-    fill: #394349;
-    stroke: #2d3438;
-    -webkit-transition: all .3s ease-out;
-    transition: all .3s ease-out;
-  }
-  
-  .amcharts-graph-g3 {
-    stroke-linejoin: round;
-    stroke-linecap: round;
-    stroke-dasharray: 500%;
-    stroke-dasharray: 0 ;    /* fixes IE prob */
-    stroke-dashoffset: 0 ;   /* fixes IE prob */
-    -webkit-animation: am-draw 40s;
-    animation: am-draw 40s;
-  }
-  @-webkit-keyframes am-draw {
-      0% {
-          stroke-dashoffset: 500%;
-      }
-      100% {
-          stroke-dashoffset: 0%;
-      }
-  }
-  @keyframes am-draw {
-      0% {
-          stroke-dashoffset: 500%;
-      }
-      100% {
-          stroke-dashoffset: 0%;
-      }
-  }
-    </style>
 <div class="page-content">
-    <div class="card-body">
-      
-            <div class="card-title">  
-                <center><h2 class="mb-0"style="font-size: 35px;color: rgb(218, 164, 48);">{{ company.company_name  }}</h2></center><br>
-                <center><label style="font-size: 40px;color: rgb(218, 164, 48);">INVENTORY SALE GRAPH </label></center>
-                <center><p id="hdate"></p></center>
+    <div class="card radius-15">
+        <div class="card-body">
+            <div class="card-title">
+                <center><h2 class="mb-0" style="font-size: 35px;color: rgb(218, 164, 48);">{{ company.company_name  }}</h2></center><br>
+                <center><label  style="font-size: 40px;color: rgb(218, 164, 48);">INVENTORY SALE GRAPH </label></center>
+                <center><p id="hdate" style="font-size: 20px;color: rgb(218, 164, 48);"></p></center>
             </div>
-       
+            <hr/>
         </div>
     </div>
 
@@ -191,58 +102,60 @@ cursor: pointer
         <div class="card-body">
             <form action="" method="post" class="needs-validation" novalidate>
                 {% csrf_token %}
-                <div class="bar">
-                    <div class="left">
-                    <div class="px-2">
-                        <label >From:</label>
-                        <input  type="date" name="fromdate" id="fromdate" style="width: 70%; border-radius: 8px;padding: 5px; border: 3px solid rgb(200, 166, 104);"> 
-                    </div>
-                        <div class="px-2">
-                            <label style="text-align:left ">To:</label>
-                        <input type="date" name="todate" id="todate" style="width: 70%; border-radius: 8px;padding: 5px; border: 3px solid rgb(200, 166, 104);">
-                    </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="Between">From</label> &nbsp;
+                        <input type="date" name="fromdate" id="fromdate"  style="width: 35%; border-radius: 8px;padding: 5px; border: 3px solid rgb(200, 166, 104);"> 
+                        <label for="To">To</label>
+                        <input type="date" name="todate" id="todate" style="width: 35%; border-radius: 8px;padding: 5px; border: 3px solid rgb(200, 166, 104);" >  &nbsp;
+                    </div>  
                 </div>
                 <br>
                 <br>
                 <div class="row">
-                 
+                    <div class="col-md-4">
+                        <input type="text" id="search" placeholder="Search..." class="form-control" autocomplete="off" 
+                        style="color: rgb(255, 255, 255);background: transparent;width: 20vw;">
+                    </div></form>
                     <div class="col-md-4"></div>
                     <div class="btn-group col-md-1 mt-2" style="float: right; height:5vh;">
-                        <a  id="myBtn" class="btn btn-outline-info text-grey"
-                            onclick="graphdiv()"><i class="fa fa-line-chart" style="background: white; color: rgb(218, 164, 48);"></i></a>&nbsp;&nbsp;
-                  
-                    <button class="btn" ><a onclick ="javascript:history.go(-1);" class="fa fa-close" style="background: white; color: rgb(218, 164, 48);"></a></button>&nbsp;&nbsp;
+                    
+                    </div>
+                    
+                    
+                    <div class="btn-group col-md-1 mt-2" style="float: right; height:5vh;">
+                       <a  id="myBtn" class="btn btn-outline-info text-grey"
+                            onclick="graphdiv()"><i class="fa fa-line-chart" style="background: white; color: rgb(218, 164, 48);"></i></a>
+                    </div>&nbsp;
+                    <div class="btn-group col-md-1 mt-2" style="float: right; height:5vh;">
+                        <button class="btn" ><a href="{% url 'inven_details' %}" class="fa fa-close" style="background: white; color: rgb(218, 164, 48);"></a></button>
+                    </div>
+                    
                 </div>
-                </div>
-            </form>
+          
         </div>
     </div>
-    <div class="bar">
-        <div class="left">
-           
-            <div class="px-2">
-                 <input type="text" id="search" placeholder="Search..." class="form-control" autocomplete="off" 
-        style="color: rgb(255, 255, 255);background: transparent;width: 20vw;">
-        
-    </div> </div> </div><BR><BR>     <hr/>
-    <div class="card radius-15 p-5" id="graph_div" style="display: none;background-color: #303232;color:rgb(218, 164, 48) ;">
+
+    <div class="card radius-15 p-5" id="graph_div" style="display: none;background-color: #303232; color:rgb(218, 164, 48) ;">
         <div class="card-body">
             <canvas id="salesChart"></canvas>
         </div>
     </div>
 
-    <div class="card radius-15 p-5">
+    <div class="card radius-15 p-5" id="sales_div">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-12" id="printtable">
-
-                    <div class="table-responsive"  > 
-                        <table class="table table-responsive-md mt-4 table-bordered"
-                            >
+                <div class="col-md-12" id="saletable">
+                   
                      
-                      
-                            
-                            <table class="table table-responsive-md mt-4 table-bordered" id="saletable" >
+                          
+                       
+                        <div class="table-responsive" style="margin-top: 100px;">
+                            <p style="text-align: right;color: black; display: none;" id="datediv">
+                                <span style="font-weight: bold;" >From Date : <span id="from"></span> </span><br> 
+                                <span style="font-weight: bold;" >To Date : <span id="to"></span></span>
+                              </p>
+                            <table class="table table-hover " id="saletable" >
                                 <thead>
                                     <tr>
                                         <th class="center font-weight-dark border-dark"class="table" style=" color: rgb(218, 164, 48);">
@@ -263,7 +176,7 @@ cursor: pointer
                                 <tbody id="tb">
                                     {% for i in inv %}
                                         <tr class="tr">
-                                            <td class="center text-white">{{ i.inv.inv_date }}</td> 
+                                            <td class="center text-white">{{ i.inv.inv_date | date:'Y-m-d'}}</td> 
                                             <td class="center text-white">{{i.quantity}}</td> 
                                             <td class="center text-white">{{ i.product}}</td>  
                                             <td class="center text-white">Inventory</td>         
@@ -273,7 +186,7 @@ cursor: pointer
                                     {% endfor %}
                                     {% for c in cnote %}
                                         <tr class="tr">
-                                            <td class="center text-white">{{ c.creditnote.creditnote_date}}</td> 
+                                            <td class="center text-white">{{ c.creditnote.creditnote_date| date:'Y-m-d'}}</td> 
                                             <td class="center text-white">{{ c.quantity }}</a></td>
                                             <td class="center text-white">{{ c.item_name }}</td>  
                                             <td class="center text-white">Credit Note</td>         
@@ -282,7 +195,7 @@ cursor: pointer
                                     {% endfor %}
                                     {% for r in rinv %}
                                         <tr class="tr">
-                                            <td class="center text-white">{{ r.ri.start}}</td> 
+                                            <td class="center text-white">{{ r.ri.start| date:'Y-m-d'}}</td> 
                                             <td class="center text-white">{{ r.quantity}}</a></td>
                                             <td class="center text-white">{{ r.iname}}</td>  
                                             <td class="center text-white">Reccuring Invoice</td>         
@@ -328,7 +241,19 @@ const myChart = new Chart(ctx, {
 function addDataPoint() {
     const tableData = extractDataFromTable();
     const dates = tableData.map(item => item.date);
-    const sales = tableData.map(item => item.sales);        
+    const sales = tableData.map(item => item.sales); 
+
+    var fromDate = document.getElementById('fromdate').value;   
+    var toDate = document.getElementById('todate').value;
+    if(dates[0] != fromDate){
+      dates.unshift(fromDate)
+      sales.unshift(null)
+    }
+    if(dates[dates.length - 1] != toDate){
+      dates.push(toDate)
+      sales.push(null)
+    }
+
     myChart.data.labels = dates;
     myChart.data.datasets[0].data = sales;
     // Redraw the chart
@@ -337,6 +262,7 @@ function addDataPoint() {
 
 function graphdiv(){
     $('#graph_div').toggle();
+    $('#sales_div').toggle();
     addDataPoint()
 }
 
@@ -377,55 +303,56 @@ $(document).ready(function() {
 
 
 <script>
-    function ApplyDateFilter() { 
+function ApplyDateFilter() { 
 
-        var fromDate = document.getElementById('fromdate').value;
-        var toDate = document.getElementById('todate').value;
-        document.getElementById("datediv").style.display = "block";
-        document.getElementById("from").innerHTML = fromDate;
-        document.getElementById("to").innerHTML = toDate;
-        document.getElementById("hdate").innerHTML = fromDate +" to " + toDate;
-        table = document.getElementById("saletable");
-        tr = table.getElementsByTagName("tr");
-     
-        for (i = 1; i < tr.length; i++) {
-            let rowVisible = false;
-            td = tr[i].getElementsByTagName("td");
+    var fromDate = document.getElementById('fromdate').value;
+    var toDate = document.getElementById('todate').value;
+    document.getElementById("datediv").style.display = "block";
+    document.getElementById("from").innerHTML = fromDate;
+    document.getElementById("to").innerHTML = toDate;
+    document.getElementById("hdate").innerHTML = fromDate +" to " + toDate;
+    table = document.getElementById("saletable");
+    tr = table.getElementsByTagName("tr");
+ 
+    for (i = 1; i < tr.length; i++) {
+        let rowVisible = false;
+        td = tr[i].getElementsByTagName("td");
 
-            // Loop through all table cells (columns) in each row
-            for (j = 0; j < td.length; j++) {
-               
-                if (td[j]) {
-                    txtValue = td[j].textContent || td[j].innerText;
-                    var check = new Date(txtValue)
-                    var from = new Date(fromDate);
-                    var to = new Date(toDate);
-                    if(check >= from && check <= to){
-                        rowVisible = true;
-                        break;
-                    }
+        // Loop through all table cells (columns) in each row
+        for (j = 0; j < td.length; j++) {
+           
+            if (td[j]) {
+                txtValue = td[j].textContent || td[j].innerText;
+                var check = new Date(txtValue)
+                var from = new Date(fromDate);
+                var to = new Date(toDate);
+                if(check >= from && check <= to){
+                    rowVisible = true;
+                    break;
                 }
             }
-
-            // Show/hide the row based on the search results
-            tr[i].style.display = rowVisible ? "" : "none";
         }
+
+        // Show/hide the row based on the search results
+        tr[i].style.display = rowVisible ? "" : "none";
     }
- 
+}
+
 </script>
 
 <script>
-    const fromDateInput = document.getElementById("fromdate");
-    const toDateInput = document.getElementById("todate"); 
-    fromDateInput.addEventListener("change", ApplyDateFilter);
-    toDateInput.addEventListener("change", ApplyDateFilter);
-    fromDateInput.addEventListener("change", addDataPoint);
-    toDateInput.addEventListener("change", addDataPoint);
+const fromDateInput = document.getElementById("fromdate");
+const toDateInput = document.getElementById("todate"); 
+fromDateInput.addEventListener("change", ApplyDateFilter);
+toDateInput.addEventListener("change", ApplyDateFilter);
+fromDateInput.addEventListener("change", addDataPoint);
+toDateInput.addEventListener("change", addDataPoint);
 </script>
 
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 
-<script type="text/javascript">function ExportToExcel(type, fn, dl) {
+<script type="text/javascript">
+function ExportToExcel(type, fn, dl) {
 var elt = document.getElementById('saletable');
 var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
 return dl ?
@@ -458,8 +385,15 @@ $(document).ready(function ($) {
 
 <script>
 function printtable(){
+    var printContents = document.getElementById("saletable").innerHTML;
 
-    window.print();
+    var $printerDiv = $('<div class="printContainer"></div>'); // create the div that will contain the stuff to be printed
+    $printerDiv.html(printContents); // add the content to be printed
+    $('body').append($printerDiv).addClass("printingContent"); // add the div to body, and make the body aware of printing (we apply a set of css styles to the body to hide its contents)
+
+    window.print(); // call print
+    $printerDiv.remove(); // remove the div
+    $('body').removeClass("printingContent");
 }
 </script>
 
