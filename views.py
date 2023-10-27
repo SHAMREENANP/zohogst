@@ -16435,30 +16435,44 @@ def inven_details(request):
     
     for i in inv:
         print(i.product)
-        adji=ItemAdjustment.objects.get(item=i.product)
-        
-        if  adji != 'NULL' or  adji != '':
-           i.aditem=adji.adjusted_quantity
-        else:   
+        try:
+            adji=ItemAdjustment.objects.get(item=i.product)
+           
+            i.aditem=adji.adjusted_quantity
+        except ItemAdjustment.DoesNotExist:  
             i.aditem=0
-               
-    for i in recur:
-        if adji==ItemAdjustment.objects.get(item=i.iname):
-            i.aditem=adji.adjusted_quantity 
-            print(adji)
+        pass       
+    for p in recur:
+        try:
+            adjis=ItemAdjustment.objects.get(item=p.iname)
+            p.aditem=adjis.adjusted_quantity 
+        except ItemAdjustment.DoesNotExist:  
+            p.aditem=0
 
     for i in estim:
-        adji=ItemAdjustment.objects.get(item=i.item_name)
-        i.aditem=adji.adjusted_quantity    
+        try:
+           adjia=ItemAdjustment.objects.get(item=i.item_name)
+           i.aditem=adjia.adjusted_quantity 
+        except ItemAdjustment.DoesNotExist:  
+            i.aditem=0   
     for i in sale:
-        adji=ItemAdjustment.objects.get(item=i.product)
-        i.aditem=adji.adjusted_quantity  
+        try:
+            adjib=ItemAdjustment.objects.get(item=i.product)
+            i.aditem=adjib.adjusted_quantity  
+        except ItemAdjustment.DoesNotExist:  
+            i.aditem=0  
     for i in challan:
-        adji=ItemAdjustment.objects.get(item=i.item_name)
-        i.aditem=adji.adjusted_quantity 
+        try:
+           adjic=ItemAdjustment.objects.get(item=i.item_name)
+           i.aditem=adjic.adjusted_quantity 
+        except ItemAdjustment.DoesNotExist:  
+            i.aditem=0  
     for i in vencredit:
-        adji=ItemAdjustment.objects.get(item=i.product)
-        i.aditem=adji.adjusted_quantity 
+        try:
+           adjid=ItemAdjustment.objects.get(item=i.product)
+           i.aditem=adjid.adjusted_quantity 
+        except ItemAdjustment.DoesNotExist:  
+            i.aditem=0  
     context={
         'user':user,
        
