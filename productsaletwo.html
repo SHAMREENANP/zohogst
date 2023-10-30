@@ -54,39 +54,41 @@
             <div class="bar">
                 <div class=" left">
                     <div class="px-2">
-                        <label style="text-align:left ">From</label><br>
-                        <input name="FromDate" class="inputdate form-control" type="date" id="in1">
+                        <label style="text-align:left ">From</label>
+                        <input name="FromDate" class="inputdate" type="date" id="in1" style="width: 70%; border-radius: 8px;padding: 5px; border: 3px solid rgb(200, 166, 104);">
                     </div>
 
                     <div class="px-2">
-                        <label style="text-align:left ">To</label><br>
-                        <input name="ToDate" type="date" class="inputdate form-control" id="in2">
-                    </div>
-                    <div class="px-2 dropdown">
-                        <label style="text-align:left;visibility: hidden;">to</label><br>
-                        <input type="text" id="searchInput" placeholder="Search..."
-                            class="dropdown-toggle form-control " autocomplete="off" data-toggle="dropdown">
-                        <div class="dropdown-menu" style="background-color: #7690da;">
-                            <a id="d-item" class="dropdown-item" href="#"
-                                style="height: 40px; font-size: 15px; color: white; ">All</a>
-                            {% for i in item %}
-                            <a id="d-item" class="dropdown-item" href="#"
-                                style="height: 40px; font-size: 15px; color: white; ">{{i.Name}}</a>
-
-                            {% endfor %}
-
-
-                        </div>
-
-                    </div>
-                    </div>
+                        <label style="text-align:left ">To</label>
+                        <input name="ToDate" type="date" class="inputdate" id="in2" style="width: 70%; border-radius: 8px;padding: 5px; border: 3px solid rgb(200, 166, 104);">
+                    </div>   
+              
                 </div>
                 <div class="right">
-                    <a href="" class="btn btn-outline-info">Graph</a>
-                    <button class="btn btn_pdf btn-outline-info">pdf</button>
-                    <button class="btn btn_print btn-outline-info" id="printButton" onclick="display()">Print</button>
-                    <button class=" btn btn-outline-info" id="export-button" onclick="exportAsExcel()">Excel</button>
+                    <a href="{% url 'product_graphview' %}" class="btn btn-outline-info"  style="background: white; color: rgb(218, 164, 48);outline-color:rgb(218, 164, 48) ;"><i class="fa fa-line-chart" ></i></a>
+                    <button class="btn btn_pdf btn-outline-info" style="background: white; color: rgb(218, 164, 48);outline-color:rgb(218, 164, 48) ;"><i class="fa fa-file-pdf"></i> </button>
+                    <button class="btn btn_print btn-outline-info" id="printButton" onclick="display()"  style="background: white; color: rgb(218, 164, 48);"><i class="fa fa-print"></i></button>
+                    <button class=" btn btn-outline-info" id="export-button" onclick="exportAsExcel()"  style="background: white; color: rgb(218, 164, 48);"> <i class="fa fa-file-excel"></i> </button>
+                    <button class=" btn btn-outline-info"  style="background: white; color: rgb(218, 164, 48);"> <a  href="{% url 'report_inventory_view' %}" class="fa fa-close" style="color:rgb(218, 164, 48);"></a> </button>
                 </div>
+            </div><br>
+            <div class="px-2 dropdown">
+                    
+                <input type="text" id="searchInput" placeholder="Search..."
+                    class="dropdown-toggle form-control " autocomplete="off" data-toggle="dropdown" style="color: rgb(255, 255, 255);background: transparent;width: 20vw;">
+                <div class="dropdown-menu" >
+                    <a id="d-item" class="dropdown-item" href="#"
+                        >All</a>
+                        {% for i in item %}
+                        <a id="d-item" class="dropdown-item" href="#"
+                           >{{i.Name}}
+
+                        </a>
+
+                        {% endfor %}
+              
+
+            </div>
             </div>
         </div>
     </div>
@@ -98,9 +100,9 @@
                     id="myTable">
                     <thead>
                         <tr>
-                            <th style=" color: rgb(218, 164, 48);">DATE</th>
+                            <th style=" color: rgb(218, 164, 48);display: none;" >DATE</th>
                             <th style=" color: rgb(218, 164, 48);">ITEM NAME</th>
-                            <th style=" color: rgb(218, 164, 48);">TYPE</th>
+                            <th style=" color: rgb(218, 164, 48);display: none;">TYPE</th>
                             <th style=" color: rgb(218, 164, 48);">QUANTITY</th>
                             <th style=" color: rgb(218, 164, 48);">SALES</th>
                             <th style=" color: rgb(218, 164, 48);">SALES WITH TAX</th>
@@ -109,9 +111,9 @@
                     <tbody>
                         {% for i in inv %}
                                         <tr class="tr">
-                                            <td class="center text-white" >{{ i.inv.inv_date | date:'Y-m-d'}}</td> 
+                                            <td class="center text-white" style="display: none;">{{ i.inv.inv_date | date:'d-m-Y'}}</td> 
                                             <td class="center text-white">{{ i.product}}</td>
-                                            <td class="center text-white">invoice</td> 
+                                            <td class="center text-white"style="display: none;">invoice</td> 
                                             <td class="center text-white">{{i.quantity}}</td> 
                                             
                                             <td class="center text-white">{{i.inv.subtotal}}</td>         
@@ -120,27 +122,18 @@
                                         </tr></a>
                                     {% endfor %}
                                   
-                                    {% for r in rinv %}
+                                    {% for r in pdebit %}
                                         <tr class="tr">
-                                            <td class="center text-white" >{{ r.ri.start| date:'d-m-Y'}}</td> 
+                                            <td class="center text-white" style="display: none;" >{{ r.ri.start| date:'d-m-Y'}}</td> 
                                             <td class="center text-white">{{ r.iname}}</td>  
-                                            <td class="center text-white" >reccuring invoice</td> 
+                                            <td class="center text-white" style="display: none;" >reccuring invoice</td> 
                                             <td class="center text-white">{{ r.quantity}}</a></td>
                                             <td class="center text-white">{{r.ri.sub_total }}</td>         
                                             <td class="center text-white">{{r.ri.total}}</td>          
                                              
                                         </tr></a>
                                     {% endfor %}
-                                    {% for i in pdebit %}
-                                    <tr>
-                                        <td>{{i.creditnote.creditnote_date| date:'d-m-Y'}}</td>
-                                        <td>{{i.item_name }}</td>
-                                        <td>Credit Notes</td>
-                                        <td>{{i.quantity}}</td>
-                                        <td>{{i.creditnote.subtotal}}.00</td>
-                                        <td>{{i.creditnote.total}}</td>
-                                    </tr>
-                                    {% endfor %}
+                                    
 
                     </tbody>
                 </table>
@@ -150,40 +143,41 @@
             </div>
             <div class="row p-4">
                 <div class="col-10">
+                    
                     <div class="row mb-2">
-                        <div class="col-4">Total Items : <p style="font-size: 19px;">{{i_count}}</p>
-                        </div><br><br>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-4 ">Invoice Sale: <p id="sales" style="font-size: 19px;">₹<span
+                        <div class="col-4 " style="display: none;">Invoice Sale: <p id="sales" style="font-size: 19px;">₹<span
                                     id="totalInvoice"></span></p>
                         </div>
-                        <div class="col-4">Reccuring Invoice Sale: <p id="purchase" style="font-size: 19px;">₹<span
+                        <div class="col-4" style="display: none;">Reccuring Invoice Sale: <p id="purchase" style="font-size: 19px;">₹<span
                                     id="totalReccuringinvoice"></span>
                             </p>
                         </div>
-                        <div class="col-4">Credit Note: <p id="expense" style="font-size: 19px;">₹<span
+                        <div class="col-4" style="display: none;">Credit Note: <p id="expense" style="font-size: 19px;">₹<span
                                     id="totalCreditnote"></span></p>
                         </div>
                     </div>
+                   
                     <div class="row mb-2">
-                        <div class="col-4 ">Total Sale: <p id="sales" style="font-size: 19px;">₹<span
+                        <div class="col-4 "style=" color: rgb(218, 164, 48);display: none;">Total Sale: <p id="sales" style="font-size: 19px;">₹<span
                                     id="totalSale"></span></p>
                         </div>
-                        <div class="col-4">Total Sales Without Credit Note:<p id="expense" style="font-size: 19px;">
+                        <div class="col-4 "style=" color: rgb(218, 164, 48);">Total Quantity: <p id="totalquntity" style="font-size: 19px;"><span
+                            id="qtyTotal"></span></p>
+                </div>
+                        <div class="col-4"style=" color: rgb(218, 164, 48);">Total Sales Without Tax :<p id="expense" style="font-size: 19px;">
                                 ₹<span id="totalSalewithoutCreditnotes"></span></p>
                         </div>
-                        <div class="col-4">Total Sales With Tax :<p id="purchase" style="font-size: 19px;">₹<span
-                                    id="grantTotal"></span>
-                            </p>
-                        </div>
+                        <div class="col-4">Total Sale:<p id="purchase" style="font-size: 19px;">₹<span
+                            id="grantTotal"></span>
+                    </p>
+                </div>
 
                     </div>
 
                 </div>
                 <div class="col-2 text-center">
-                    <h5 style="padding-top: 100px;">Grand Total</h5>
-                    <h4 id="totvalue"><span id="superTotal"></span></h4>
+                    <h5 style="padding-top: 100px;display: none;" >Grand Total</h5>
+                    <h4 id="totvalue"><span id="superTotal" style="display: none;"></span></h4>
                 </div>
             </div>
         </div>
@@ -248,12 +242,18 @@
             $tableRows.hide();
             $(filteredRows).show();
             calculateTotals(filteredRows);
+            calculateqtytotal(filteredRows);
             calculateGranttotal(filteredRows);
+            calculateTotalsqty(filteredRows);
             calculateGrantTotalByMonth(filteredRows);
             return filteredRows; // Return filtered rows
         }
+      
+
+ 
 
         // Code for filtering rows based on search input
+        
         $rows = $('.dropdown-menu #d-item');
         $('#searchInput').keyup(function () {
             var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
@@ -292,7 +292,7 @@
 
                 let typeCell = row.children[2];
 
-                if (typeCell.textContent.trim() === "Credit Notes") {
+                if (typeCell.textContent.trim() === "reccuring invoice") {
                     let creditgranttotalCell = row.children[5];
                     let creditgranttotal = parseFloat(creditgranttotalCell.textContent);
                     totalCreditnotegranttotal += creditgranttotal;
@@ -389,8 +389,119 @@
 
     });
 
-</script>
 
+        function calculateTotals(rows) {
+            totalInvoiceSubtotal = 0;
+            totalRecinvoiceSubtotal = 0;
+            totalCreditnoteSubtotal = 0;
+
+            for (let row of rows) {
+                let typeCell = row.children[2];
+
+                if (typeCell.textContent.trim() === "invoice") {
+                    let subtotalCell = row.children[4];
+                    let subtotal = parseFloat(subtotalCell.textContent);
+                    totalInvoiceSubtotal += subtotal;
+                }
+
+                if (typeCell.textContent.trim() === "reccuring invoice") {
+                    let subtotalCell = row.children[4];
+                    let subtotal = parseFloat(subtotalCell.textContent);
+                    totalRecinvoiceSubtotal += subtotal;
+                }
+
+                if (typeCell.textContent.trim() === "Credit Notes") {
+                    let subtotalCell = row.children[4];
+                    let subtotal = parseFloat(subtotalCell.textContent);
+                    totalCreditnoteSubtotal += subtotal;
+                }
+            }
+
+            var TITag = document.getElementById('totalInvoice');
+            TITag.textContent = totalInvoiceSubtotal;
+
+            var RITag = document.getElementById('totalReccuringinvoice');
+            RITag.textContent = totalRecinvoiceSubtotal;
+
+            var cnTag = document.getElementById('totalCreditnote');
+            cnTag.textContent = totalCreditnoteSubtotal;
+
+            var tsTag = document.getElementById('totalSale');
+            tsTag.textContent = totalInvoiceSubtotal + totalRecinvoiceSubtotal + totalCreditnoteSubtotal;
+
+            var tswcnTag = document.getElementById('totalSalewithoutCreditnotes');
+            tswcnTag.textContent = totalInvoiceSubtotal + totalRecinvoiceSubtotal;
+        }
+
+        // Call calculateTotals initially to calculate totals for all rows
+        calculateTotals(originalRows);
+
+        function calculateTotalsqty(rows) {
+            totalInvoiceqty = 0;
+            totalRecinvoiceqty = 0;
+            totalCreditnoteqty = 0;
+
+            for (let row of rows) {
+                let typeCell = row.children[2];
+
+                if (typeCell.textContent.trim() === "invoice") {
+                    let quantityCell = row.children[3];
+                    let subtotalq = parseFloat(quantityCell.textContent);
+                    totalInvoiceqty += subtotalq;
+                }
+
+                if (typeCell.textContent.trim() === "reccuring invoice") {
+                    let quantityCell = row.children[3];
+                    let subtotalq = parseFloat(quantityCell.textContent);
+                    totalRecinvoiceqty += subtotalq;
+                }
+
+                if (typeCell.textContent.trim() === "Credit Notes") {
+                    let quantityCell = row.children[3];
+                    let subtotalq = parseFloat(quantityCell.textContent);
+                    totalCreditnoteqty += subtotalq;
+                }
+            }
+
+            var TITag = document.getElementById('totalInvoiceqty');
+            TITag.textContent = totalInvoiceqty;
+
+            var RITag = document.getElementById('totalReccuringinvoiceqty');
+            RITag.textContent = totalRecinvoiceqty;
+
+            var cnTag = document.getElementById('totalCreditnoteqty');
+            cnTag.textContent = totalCreditnoteqty;
+
+            var tsTag = document.getElementById('totalqty');
+            tsTag.textContent = totalInvoiceqty + totalRecinvoiceqty + totalCreditnoteqty;
+
+            var tswcnTag = document.getElementById('totalquntity');
+            tswcnTag.textContent = totalInvoiceqty + totalRecinvoiceqty;
+        }
+
+        // Call calculateTotals initially to calculate totals for all rows
+        calculateTotalsqty(originalRows);     
+</script>
+<script>
+
+    $(document).ready(function () {
+        function calctot(col, id) {
+            var total = 0;
+
+            $("#myTable tbody tr").each(function () {
+                var amount = parseFloat($(this).find("td:eq(" + col + ")").text()) || 0;
+                total += amount;
+            });
+            $("#toq" + id).text( total.toFixed(2)); // 
+            $("#" + id).text('₹' + total.toFixed(2)); // Display total with two decimal places
+
+            $("#totvalue").text('₹' + total.toFixed(2));
+        }
+        calctot(3, 'toq');
+        calctot(4, 'tot');
+        calctot(5, 'balance'); // Call the function initially
+    });
+</script>
 
 <script type="text/javascript">
     function exportAsExcel() {
@@ -435,7 +546,27 @@
         });
     });
 
+    function calculateqtytotal(rows) {
+            totalgrant = 0;
+           
 
+            for (let row of rows) {
+                let grantTotalCell = row.children[3];
+                let grant = parseFloat(grantTotalCell.textContent);
+                totalgrant += grant;
+
+               
+
+                
+            }
+
+            var superTotal = document.getElementById('qtyTotal');
+            var roundedNumber = totalgrant;
+            superTotal.textContent = roundedNumber.toFixed(2);
+
+           
+        }
+        calculateqtytotal(originalRows);
 
 </script>
 
