@@ -162,7 +162,8 @@
                                     id="totalSale"></span></p>
                         </div>
                         <div class="col-4 "style=" color: rgb(218, 164, 48);">Total Quantity: <p id="totalquntity" style="font-size: 19px;"><span
-                            id="qtyTotal"></span></p>
+                            id="qtyTotal"><span
+                            id="toq"></span></p>
                 </div>
                         <div class="col-4"style=" color: rgb(218, 164, 48);">Total Sales Without Tax :<p id="expense" style="font-size: 19px;">
                                 ₹<span id="totalSalewithoutCreditnotes"></span></p>
@@ -195,7 +196,9 @@
         var totalInvoiceSubtotal = 0;
         var totalRecinvoiceSubtotal = 0;
         var totalCreditnoteSubtotal = 0;
-
+        var totalInvoiceqty = 0;
+        var totalRecinvoiceqty = 0;
+        var totalCreditnoteqty = 0;
         document.getElementById("in1").addEventListener("change", filterByDate);
         document.getElementById("in2").addEventListener("change", filterByDate);
 
@@ -274,6 +277,7 @@
             }).hide();
 
             var remainingRows = $(filteredRows).not(dRows);
+            calculateTotalsqty(remainingRows);
             calculateTotals(remainingRows);
             calculateGranttotal(remainingRows);
             calculateGrantTotalByMonth(remainingRows);
@@ -387,54 +391,9 @@
 
         calculateGrantTotalByMonth(originalRows);
 
-    });
+    
 
-
-        function calculateTotals(rows) {
-            totalInvoiceSubtotal = 0;
-            totalRecinvoiceSubtotal = 0;
-            totalCreditnoteSubtotal = 0;
-
-            for (let row of rows) {
-                let typeCell = row.children[2];
-
-                if (typeCell.textContent.trim() === "invoice") {
-                    let subtotalCell = row.children[4];
-                    let subtotal = parseFloat(subtotalCell.textContent);
-                    totalInvoiceSubtotal += subtotal;
-                }
-
-                if (typeCell.textContent.trim() === "reccuring invoice") {
-                    let subtotalCell = row.children[4];
-                    let subtotal = parseFloat(subtotalCell.textContent);
-                    totalRecinvoiceSubtotal += subtotal;
-                }
-
-                if (typeCell.textContent.trim() === "Credit Notes") {
-                    let subtotalCell = row.children[4];
-                    let subtotal = parseFloat(subtotalCell.textContent);
-                    totalCreditnoteSubtotal += subtotal;
-                }
-            }
-
-            var TITag = document.getElementById('totalInvoice');
-            TITag.textContent = totalInvoiceSubtotal;
-
-            var RITag = document.getElementById('totalReccuringinvoice');
-            RITag.textContent = totalRecinvoiceSubtotal;
-
-            var cnTag = document.getElementById('totalCreditnote');
-            cnTag.textContent = totalCreditnoteSubtotal;
-
-            var tsTag = document.getElementById('totalSale');
-            tsTag.textContent = totalInvoiceSubtotal + totalRecinvoiceSubtotal + totalCreditnoteSubtotal;
-
-            var tswcnTag = document.getElementById('totalSalewithoutCreditnotes');
-            tswcnTag.textContent = totalInvoiceSubtotal + totalRecinvoiceSubtotal;
-        }
-
-        // Call calculateTotals initially to calculate totals for all rows
-        calculateTotals(originalRows);
+      
 
         function calculateTotalsqty(rows) {
             totalInvoiceqty = 0;
@@ -480,7 +439,31 @@
         }
 
         // Call calculateTotals initially to calculate totals for all rows
-        calculateTotalsqty(originalRows);     
+        calculateTotalsqty(originalRows); 
+        
+        function calculateqtytotal(rows) {
+            totalgrant = 0;
+           
+
+            for (let row of rows) {
+                let grantTotalCell = row.children[3];
+                let grant = parseFloat(grantTotalCell.textContent);
+                totalgrant += grant;
+
+               
+
+                
+            }
+
+            var superTotal = document.getElementById('qtyTotal');
+            var roundedNumber = totalgrant;
+            superTotal.textContent = roundedNumber.toFixed(2);
+
+           
+    }
+    calculateqtytotal(originalRows);
+    });
+   
 </script>
 <script>
 
@@ -492,7 +475,7 @@
                 var amount = parseFloat($(this).find("td:eq(" + col + ")").text()) || 0;
                 total += amount;
             });
-            $("#toq" + id).text( total.toFixed(2)); // 
+            $("#toq" + id).text( +total.toFixed(2)); // 
             $("#" + id).text('₹' + total.toFixed(2)); // Display total with two decimal places
 
             $("#totvalue").text('₹' + total.toFixed(2));
@@ -546,31 +529,24 @@
         });
     });
 
-    function calculateqtytotal(rows) {
-            totalgrant = 0;
-           
-
-            for (let row of rows) {
-                let grantTotalCell = row.children[3];
-                let grant = parseFloat(grantTotalCell.textContent);
-                totalgrant += grant;
-
-               
-
-                
-            }
-
-            var superTotal = document.getElementById('qtyTotal');
-            var roundedNumber = totalgrant;
-            superTotal.textContent = roundedNumber.toFixed(2);
-
-           
-        }
-        calculateqtytotal(originalRows);
+    
 
 </script>
 
-
+<script>
+    $(document).ready(function(){
+        
+        var total = 0;
+        $('td:nth-child(3)').each(function()
+        {
+            
+            var amount = parseFloat($(this).html());
+                total += amount;
+            $('#t1').text(total)
+        });
+    });
+   
+</script>
 
 
 {% endblock %}
