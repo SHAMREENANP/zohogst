@@ -95,41 +95,36 @@ cursor: pointer
                 <center><label  id="headline" style="font-size: 40px;color: rgb(218, 164, 48);">INVENTORY SALE REPORT </label></center>
                 <center><p id="hdate" style="font-size: 20px;color: rgb(218, 164, 48);"></p></center>
             </div>
+            <p class="text  text-center" style="color:rgb(218, 164, 48);" id="date-range-display"style="display: inline-block;">From:{{start}} _To :{{end}}</p>
             <hr/>
         </div>
-    </div>
-
-
-    <div class="card radius-15">
-        <div class="card-body">
+    </div> 
+     <form action="{% url 'productsale_filter' %}" method="post">
+        {% csrf_token %}
+        From <input type="date" id="d1" name="d1"  style="width: 20%; border-radius: 10px;padding: 8px;border: 3px solid rgb(214, 141, 5);" required>
+        To <input type="date" id="d2" name="d2"  style="width: 20%; border-radius: 10px;padding: 8px;border: 3px solid rgb(214, 141, 5);" required>
+        <button class=" fa fa-filter btn-warning btn-outline-light" style="padding: 10px;border-radius: 10px;background-color: rgb(214, 141, 5);color: white;"></button>
+        
+    </form>
+    <div class="bar">
+        <div class=" left">
             
-                <form action="{% url 'productsale_filter' %}" method="post">
-                    {% csrf_token %}
-                    From <input type="date" id="d1" name="d1"  style="width: 20%; border-radius: 10px;padding: 8px;border: 3px solid rgb(214, 141, 5);" required>
-                    To <input type="date" id="d2" name="d2"  style="width: 20%; border-radius: 10px;padding: 8px;border: 3px solid rgb(214, 141, 5);" required>
-                    <button class=" fa fa-filter btn-warning btn-outline-light" style="padding: 10px;border-radius: 10px;background-color: rgb(214, 141, 5);color: white;"></button>
-                    
-                </form>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    
-                    <div class="btn-group col-md-1 mt-2" style="float: right; height:5vh;">
-                        <button class="btn" ><a href="{% url 'report_inventory_view' %}" class="fa fa-close" style="background: white; color: rgb(218, 164, 48);"></a></button>
-                    </div>
-                     <div class="btn-group col-md-1 mt-2" style="float: right; height:5vh;">
-                        <a id="myBtn" class="btn btn-outline-info text-grey btn_pdf"
-                            role="button" style="background: white; color: rgb(218, 164, 48);">  <i class="fa fa-file-pdf"></i> </a>
-                    </div>
-                    <div class="btn-group col-md-1 mt-2" style="float: right; height:5vh;">
-                        <a id="printBtn" class="btn btn-outline-info text-grey btn_print"
-                            role="button" onclick="printtable()"style="background: white; color: rgb(218, 164, 48);"><i class="fa fa-print"></i></a>
-                    </div>
-                    <div class="btn-group col-md-1 mt-2" style="float: right; height:5vh;">
-    
-                        <a class="btn btn-outline-info text-grey" onclick="ExportToExcel('xlsx')"style="background: white; color: rgb(218, 164, 48);">   <i class="fa fa-file-excel"></i></a>
-                    </div>
-                    
-                 </div>
+      
+        </div>
+        <div class="right">
            
+            <button class="btn btn_pdf btn-outline-info" style="background: white; color: rgb(218, 164, 48);outline-color:rgb(218, 164, 48) ;"><i class="fa fa-file-pdf"></i> </button>
+            <button class="btn btn_print btn-outline-info" id="printButton" onclick="display()"  style="background: white; color: rgb(218, 164, 48);"><i class="fa fa-print"></i></button>
+            <button class=" btn btn-outline-info" id="export-button" onclick="exportAsExcel()"  style="background: white; color: rgb(218, 164, 48);"> <i class="fa fa-file-excel"></i> </button>
+            <button class=" btn btn-outline-info"  style="background: white; color: rgb(218, 164, 48);"> <a  href="{% url 'report_inventory_view' %}" class="fa fa-close" style="color:rgb(218, 164, 48);"></a> </button>
+        </div>
+    </div>
+              
+                     
+                   
+              
+        
+               
  
                   <BR>  
                     
@@ -151,7 +146,7 @@ cursor: pointer
         
         </div>
    
-  
+        <div  id="pdf-card">
         <div class="card radius-15 p-5" id="sales_div">
             <div class="card-body">
                 <div class="row">
@@ -224,7 +219,14 @@ cursor: pointer
                                    
                                 </tr>
 
-                            
+                                <tr class="tr">
+                                    <td class="center text-white" >Vendor_Credits</td> 
+                                    <td class="center text-white">{{count4}}</td>  
+                                   
+                                    <td class="center text-white">{{subsale4}}</td>         
+                                    <td class="center text-white">{{sale3}}</td>          
+                                   
+                                </tr>
                         </tbody>
                             </table>
                         </div>
@@ -237,309 +239,52 @@ cursor: pointer
     </div>
 </div>
 
-<script>
-
-    $(document).ready(function () {
-        function calctot(col, id) {
-            var total = 0;
-
-            $("#saletable tbody tr").each(function () {
-                var amount = parseFloat($(this).find("td:eq(" + col + ")").text()) || 0;
-                total += amount;
-            });
-            $("#toq" + id).text( ''+total.toFixed(2)); // 
-            $("#" + id).text('₹' + total.toFixed(2)); // Display total with two decimal places
-
-            $("#totvalue").text('₹' + total.toFixed(2));
-        }
-        calctot(2, 'toq');
-        calctot(3, 'tot');
-        calctot(4, 'balance'); // Call the function initially
-    });
-</script>
-
-<script>
-
-    $(document).ready(function () {
-        function calctot(col, id) {
-            var total = 0;
-
-            $("#saletable1 tbody tr").each(function () {
-                var amount = parseFloat($(this).find("td:eq(" + col + ")").text()) || 0;
-                total += amount;
-            });
-            $("#toq1" + id).text( ''+total.toFixed(2)); // 
-            $("#" + id).text('₹' + total.toFixed(2)); // Display total with two decimal places
-
-            $("#totvalue1").text('₹' + total.toFixed(2));
-        }
-        calctot(2, 'toq1');
-        calctot(3, 'tot1');
-        calctot(4, 'balance1'); // Call the function initially
-    });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-const ctx = document.getElementById('salesChart').getContext('2d');
-
-const myChart = new Chart(ctx, {
-   type: "bar",
-    data: {
-        labels: [],
-        datasets: [{
-            label: 'Data',
-            data: [],
-            backgroundColor: 'rgb(218, 164, 48)',
-            borderColor: 'rgb(218, 164, 48)',
-            borderWidth: .1,
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    }
-});
-
-function addDataPoint() {
-    const tableData = extractDataFromTable();
-    const dates = tableData.map(item => item.date);
-    const sales = tableData.map(item => item.sales); 
-
-    var fromDate = document.getElementById('fromdate').value;   
-    var toDate = document.getElementById('todate').value;
-    if(dates[0] != fromDate){
-      dates.unshift(fromDate)
-      sales.unshift(null)
-    }
-    if(dates[dates.length - 1] != toDate){
-      dates.push(toDate)
-      sales.push(null)
-    }
-
-    myChart.data.labels = dates;
-    myChart.data.datasets[0].data = sales;
-    // Redraw the chart
-    myChart.update();
-}
-
-function graphdiv(){
-    $('#graph_div').toggle();
-    $('#sales_div').toggle();
-    addDataPoint()
-}
-
-function extractDataFromTable() {
-    const table = document.getElementById('tb');
-    const rows = table.getElementsByTagName('tr');
-    
-    const data = [];
-    
-    for (let i = 0; i < rows.length; i++) {
-        if (window.getComputedStyle(rows[i]).display !== 'none') {
-            const cells = rows[i].getElementsByTagName('td');
-            const date = cells[0].textContent;
-            const sales = parseInt(cells[2].textContent);
-            data.push({ date, sales });
-        }
-    }
-    
-    return data;
-}
-</script>
-
-<script>
-$(document).ready(function() {
-    var $rows = $('.table tbody tr');
-    $('#search').keyup(function() {
-        var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
-        $rows.show().filter(function() {
-            console.log($rows.show())
-
-            var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
-            console.log(text)
-            return !~text.indexOf(val);
-        }).hide();
-    });
-});
-</script>
-
-
-<script>
-function ApplyDateFilter() { 
-
-    var fromDate = document.getElementById('fromdate').value;
-    var toDate = document.getElementById('todate').value;
-    document.getElementById("datediv").style.display = "block";
-    document.getElementById("from").innerHTML = fromDate;
-    document.getElementById("to").innerHTML = toDate;
-    document.getElementById("hdate").innerHTML = fromDate +" to " + toDate;
-    table = document.getElementById("saletable");
-    tr = table.getElementsByTagName("tr");
- 
-    for (i = 1; i < tr.length; i++) {
-        let rowVisible = false;
-        td = tr[i].getElementsByTagName("td");
-
-        // Loop through all table cells (columns) in each row
-        for (j = 0; j < td.length; j++) {
-           
-            if (td[j]) {
-                txtValue = td[j].textContent || td[j].innerText;
-                var check = new Date(txtValue)
-                var from = new Date(fromDate);
-                var to = new Date(toDate);
-                if(check >= from && check <= to){
-                    rowVisible = true;
-                    break;
-                }
-            }
-        }
-
-        // Show/hide the row based on the search results
-        tr[i].style.display = rowVisible ? "" : "none";
-    }
-}
-
-</script>
-
-<script>
-const fromDateInput = document.getElementById("fromdate");
-const toDateInput = document.getElementById("todate"); 
-fromDateInput.addEventListener("change", ApplyDateFilter);
-toDateInput.addEventListener("change", ApplyDateFilter);
-fromDateInput.addEventListener("change", addDataPoint);
-toDateInput.addEventListener("change", addDataPoint);
-</script>
-
-<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 
 <script type="text/javascript">
-function ExportToExcel(type, fn, dl) {
-var elt = document.getElementById('saletable');
-var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
-return dl ?
-    XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
-    XLSX.writeFile(wb, fn || ('product sale report.' + (type || 'xlsx')));
-}
-</script>
+    function exportAsExcel() {
+        const table = document.getElementById('myTable'); // Replace 'myTable' with your table's ID
+        const wb = XLSX.utils.table_to_book(table);
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
-
-<script type="text/javascript">
-$(document).ready(function ($) {
-    $(document).on('click', '.btn_pdf', function (event) {
-        event.preventDefault();
-        var element = document.getElementById('saletable');  
-        element.style.color = 'white';
-        element.style.backgroundColor = 'black';
-        var opt =
-        {
-            margin: 1,
-            filename: 'sales_summary_report' + '.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait', }
-        };
-        html2pdf().set(opt).from(element).save();
-    });
-});
-</script>
-
-<script>
-
-    function printtable(){
-        var printContents = document.getElementById("saletable").innerHTML;
-
-        var $printerDiv = $('<div class="printContainer"></div>'); // create the div that will contain the stuff to be printed
-        $printerDiv.html(printContents); // add the content to be printed
-        $('body').append($printerDiv).addClass("printingContent"); // add the div to body, and make the body aware of printing (we apply a set of css styles to the body to hide its contents)
-
-        window.print(); // call print
-        $printerDiv.remove(); // remove the div
-        $('body').removeClass("printingContent");
+        XLSX.writeFile(wb, 'inve.xlsx');
     }
-
 </script>
 <script>
-     function selectParty() {
-        document.getElementById("search").addEventListener("input", function () {
-            var filterValue = this.value.toLowerCase();
-            var table = document.getElementById("saletable");
-            var rows = table.getElementsByTagName("tr");
+    function display() {
+        var printContents = document.getElementById("pdf-card").innerHTML;
+        var div2Contents = document.getElementById('div2').innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = div2Contents + printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        location.reload();
 
-            
-            if (document.getElementById("in1").value == '' && document.getElementById("in2").value == '') {
-                for (var i = 1; i < rows.length; i++) { // Start from 1 to skip the table header row
-                    
-                    var firstColumnValue = rows[i].getElementsByTagName("td")[0].textContent.toLowerCase();
-
-                    if (firstColumnValue.indexOf(filterValue) > -1) {
-
-                        rows[i].style.display = "";
-                    } else {
-                        rows[i].style.display = "none";
-                    }
-
-                }
-
-            }
-            else {
-                var startDate = new Date(document.getElementById("in1").value);
-            var endDate = new Date(document.getElementById("in2").value);
-                for (var i = 1; i < rows.length; i++) {
-                    var firstColumnValue = rows[i].getElementsByTagName("td")[0].textContent.toLowerCase();
-                    var row = rows[i];
-                    var dateCell = row.cells[1];
-                    var rowDate = new Date(dateCell.textContent);
-
-                    if (rowDate >= startDate && rowDate <= endDate ) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-
-                }
-            }
-
-
-
-
-        });
     }
-selectParty();
-const inputElement = document.querySelector('input[name="party"]');
-const headlineElement = document.getElementById('headline');
-inputElement.addEventListener('input', function () {
-
-    const selectedValue = inputElement.value;
-    if (selectedValue == '') {
-        head = 'PRODUCT SALE REPORT'
-    }
-    else {
-        head = selectedValue + '  SALE REPORT';
-    }
-    headlineElement.textContent = head.toUpperCase();
-
-});
 
 
-
-</script>
-<script>
-    $(document).ready(function(){
-        var empsalary;
-        var total = 0;
-        $('td:nth-child(2)').each(function()
-        {
-            salary = $(this).html();
-            total +=parseFloat(salary);
-            $('#t1').text(total)
+    $(document).ready(function ($) {
+        $(document).on('click', '.btn_pdf', function (event) {
+            console.log('print1');
+            event.preventDefault();
+            var name = document.getElementById("headline").innerHTML;
+            var div2 = document.getElementById("div2");
+            var element = document.createElement('div');
+            element.appendChild(div2.cloneNode(true));
+            element.appendChild(document.getElementById('pdf-card').cloneNode(true));
+            element.style.color = 'white';
+            element.style.backgroundColor = '#243e54';
+            var opt = {
+                margin: 1,
+                filename: name + '.pdf',
+                image: { type: 'png', quality: 1.0 },
+                html2canvas: { scale: 3, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a3', orientation: 'portrait', backgroundColor: '#243e54' }
+            };
+            html2pdf().set(opt).from(element).save();
         });
     });
+
+    
+
 </script>
 
 {% endblock %}
