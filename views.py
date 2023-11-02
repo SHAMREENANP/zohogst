@@ -16498,46 +16498,18 @@ def productsalereport(request):
     company = company_details.objects.get(user=request.user)
     item=AddItem.objects.all()
     inv = invoice_item.objects.all()
-    rinv = recur_itemtable.objects.all()
-    
-    totalsale=0
-    totalsale1=0
-   
-
-    
+    rinv = Recurring_invoice.objects.all()
+    pdebit_list = [] 
     for i in rinv:
-        if i.ri.total != 'NULL' or i.ri.total != " ":
-            totalsale1 += float(i.ri.total)
-        if i.ri.total != 'NULL' or i.ri.total != " ":
-            totalsale1 += float(i.ri.total)
-        cname = i.iname
-        parts = cname.split()
-        if parts[0].isdigit():
-            i.cust = ' '.join(parts[1:])
-        else:
-            i.cust = cname
-    for i in inv:
-        if i.inv.grandtotal != 'NULL' or i.inv.grandtotal != " ":
-            totalsale += float(i.inv.grandtotal)
-        cname = i.product
-        parts = cname.split()
-        if parts[0].isdigit():
-            i.cust = ' '.join(parts[1:])
-        else:
-            i.cust = cname
+        pdebit = recur_itemtable.objects.filter(ri=i)
         
-   
+        # Append each pdebit object to the pdebit_list
+        for pd in pdebit:
+            pdebit_list.append(pd)
     
-    sale=totalsale
-    sale1=totalsale1
-    
-    sale='{:.2f}'.format(sale)
-    sale1='{:.2f}'.format(sale1)
    
 
-
-
-    context = {'company':company,"inv":inv,"rinv":rinv,'item':item,'sale':sale,'sale1':sale1
+    context = {'company':company,"inv":inv,"rinv":rinv,'item':item,'pdebit':pdebit_list
         }
     return render(request, 'productsaletwo.html', context)
 def inven_salecount(request):
@@ -16547,21 +16519,22 @@ def inven_salecount(request):
     rinv=recur_itemtable.objects.all()
     estim=EstimateItems.objects.all()
     sorder=sales_item.objects.all()
-    challan=ChallanItems.objects.all()
-    
     vencredit=Vendor_invoice_item.objects.all()
     totalsale=0
     totalsale1=0
     totalsale2=0
     totalsale3=0
+    totalsale4=0
     subtotalsale=0
     subtotalsale1=0
     subtotalsale2=0
     subtotalsale3=0
+    subtotalsale4=0
     count=0
     count1=0
     count2=0
     count3=0
+    count4=0
     for i in rinv:
         count1 +=1
         print(count)
@@ -16589,62 +16562,82 @@ def inven_salecount(request):
             totalsale3 += float(i.sale.grandtotal)
         if i.sale.subtotal != 'NULL' or i.sale.subtotal!= " ":
             subtotalsale3 += float(i.sale.subtotal)
+    for i in vencredit:
+        count4 +=1
+        if i.inv.grandtotal != 'NULL' or i.inv.grandtotal != " ":
+            totalsale4 += float(i.inv.grandtotal)
+        if i.inv.subtotal != 'NULL' or i.inv.subtotal!= " ":
+            subtotalsale4 += float(i.inv.subtotal)
+          
 
     sale=totalsale
     sale1=totalsale1
     sale2=totalsale2
     sale3=totalsale3
+    sale4=totalsale4
     subsale=subtotalsale
     subsale1=subtotalsale1
     subsale2=subtotalsale2
     subsale3=subtotalsale3
+    subsale4=subtotalsale4
     sale='{:.2f}'.format(sale)
     sale1='{:.2f}'.format(sale1)
     sale2='{:.2f}'.format(sale2)
     sale3='{:.2f}'.format(sale3)
+    sale4='{:.2f}'.format(sale4)
     subsale='{:.2f}'.format(subsale)
     subsale1='{:.2f}'.format(subsale1)
     subsale2='{:.2f}'.format(subsale2)
     subsale3='{:.2f}'.format(subsale3)
+    subsale4='{:.2f}'.format(subsale4)
     context={
         'count':count,
         'count1':count1,
         'count2':count2,
         'count3':count3,
+        'count4':count4,
         'item':item,
         'rinv':rinv,
         'inv':inv,
         'company':company,
         'estim':estim,
         'sorder':sorder,
-        'challan':challan,
+        
         'vencredit':vencredit,
         'sale':sale,
         'sale1':sale1,
         'sale2':sale2,
         'sale3':sale3,
+        'sale4':sale4,
         'subsale':subsale,
         'subsale1':subsale1,
         'subsale2':subsale2,
         'subsale3':subsale3,
+        'subsale4':subsale4,
     }
     return render(request,'inventorysalecount.html', context)
 def productsale_filter(request):
     company = company_details.objects.get(user=request.user)
     inv = sales_item.objects.all()
     rinv =recur_itemtable.objects.all()
+    estim=EstimateItems.objects.all()
+    sorder=sales_item.objects.all()
+    vencredit=Vendor_invoice_item.objects.all()
     totalsale=0
     totalsale1=0
     totalsale2=0
     totalsale3=0
+    totalsale4=0
     subtotalsale=0
     subtotalsale1=0
     subtotalsale2=0
     subtotalsale3=0
+    subtotalsale4=0
     count=0
     count1=0
     count2=0
     count3=0
+    count4=0
     if request.method == 'POST':
         s=request.POST['d1']
         start=str(s)
@@ -16654,6 +16647,7 @@ def productsale_filter(request):
         rinv = recur_itemtable.objects.filter(ri__start__range=[start,end])
         estim=EstimateItems.objects.filter(estimate__estimate_date__range=[start,end])
         sorder=sales_item.objects.filter(sale__sales_date__range=[start,end])
+        vencredit=Vendor_invoice_item.objects.filter(inv__vendor_date__range=[start,end])
     for i in rinv:
         count1 +=1
         print(count)
@@ -16687,27 +16681,38 @@ def productsale_filter(request):
             totalsale3 += float(i.sale.grandtotal)
         if i.sale.subtotal != 'NULL' or i.sale.subtotal!= " ":
             subtotalsale3 += float(i.sale.subtotal)
+    for i in vencredit:
+        count4 +=1
+        if i.inv.grandtotal != 'NULL' or i.inv.grandtotal != " ":
+            totalsale3 += float(i.sale.grandtotal)
+        if i.inv.subtotal != 'NULL' or i.inv.subtotal!= " ":
+            subtotalsale3 += float(i.inv.subtotal)
     sale=totalsale
     sale1=totalsale1
     sale2=totalsale2
     sale3=totalsale3
+    sale4=totalsale4
     subsale=subtotalsale
     subsale1=subtotalsale1
     subsale2=subtotalsale2
     subsale3=subtotalsale3
+    subsale4=subtotalsale4
     sale='{:.2f}'.format(sale)
     sale1='{:.2f}'.format(sale1)
     sale2='{:.2f}'.format(sale2)
     sale3='{:.2f}'.format(sale3)
+    sale4='{:.2f}'.format(sale4)
     subsale='{:.2f}'.format(subsale)
     subsale1='{:.2f}'.format(subsale1)
     subsale2='{:.2f}'.format(subsale2)
     subsale3='{:.2f}'.format(subsale3)
+    subsale4='{:.2f}'.format(subsale4)
     context={
         'count':count,
         'count1':count1,
         'count2':count2,
         'count3':count3,
+        'count4':count4,
         'end':end,
         'start':start,
         'rinv':rinv,
@@ -16715,17 +16720,73 @@ def productsale_filter(request):
         'company':company,
         'estim':estim,
         'sorder':sorder,
+        'vencredit':vencredit,
         'sale':sale,
         'sale1':sale1,
         'sale2':sale2,
         'sale3':sale3,
+        'sale4':sale4,
         'subsale':subsale,
         'subsale1':subsale1,
         'subsale2':subsale2,
         'subsale3':subsale3,
+        'subsale4':subsale4,
     }
     return render(request, 'inventorysalecount.html', context)  
 
     
 
-  
+def product_graphview(request):
+    company = company_details.objects.get(user=request.user)
+    item=AddItem.objects.all()
+   
+
+    context = {
+        " company": company,"item":item
+    }
+    return render(request,"product_graphview.html",context)
+    
+def product_graphview_btn(request, pk):
+    
+    company = company_details.objects.get(user=request.user)
+    item=AddItem.objects.all()
+    rec_total =recur_itemtable.objects.filter( items=pk)
+
+    rec_totals = []
+    for rec_item in rec_total:
+        rec = Recurring_invoice.objects.get(recinvoiceid=rec_item.Recurring_invoice_id)
+        rec_totals.append(rec)
+
+    rec_totals_df = pd.DataFrame.from_records([rec.__dict__ for rec in rec_totals])
+    rec_totals_df['date'] = pd.to_datetime(rec_totals_df['start'])
+    rec_totals_df['month'] = rec_totals_df['date'].dt.month
+    rec_totals_monthly_total = rec_totals_df.groupby('month')['grandtotal'].sum()
+
+    inv_total = invoice_item.objects.filter(product=pk)
+
+    inv_totals = []
+    for inv_item in inv_total:
+        inv = invoice.objects.get(invoiceid=inv_item.invoice_id)
+        inv_totals.append(inv)
+
+    inv_totals_df = pd.DataFrame.from_records([inv.__dict__ for inv in inv_totals])
+    inv_totals_df['date'] = pd.to_datetime(inv_totals_df['inv_date'])
+    inv_totals_df['month'] = inv_totals_df['date'].dt.month
+    inv_totals_monthly_total = inv_totals_df.groupby('month')['grandtotal'].sum()
+   
+
+    rec_totals_monthly_total = rec_totals_monthly_total.reindex(range(1, 13), fill_value=0)
+    inv_totals_monthly_total = inv_totals_monthly_total.reindex(range(1, 13), fill_value=0)
+
+    total_monthly_total = (rec_totals_monthly_total + inv_totals_monthly_total).to_dict()
+
+    print(total_monthly_total)
+    context = {
+        'item': item,
+        'total_monthly_total':total_monthly_total,
+        "company":company,
+        "pk":pk
+    }
+    
+    return render(request, "product_graphview.html", context)
+    
