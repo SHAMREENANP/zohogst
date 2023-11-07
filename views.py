@@ -16432,29 +16432,32 @@ def inven_details(request):
     user=request.user.id
     adj=Adjustment.objects.all()
     adjItems=ItemAdjustment.objects.all()
-    
+  
     for i in inv:
         print(i.product)
         try:
             adji=ItemAdjustment.objects.get(item=i.product)
            
             i.aditem=adji.adjusted_quantity
+           
         except ItemAdjustment.DoesNotExist:  
             i.aditem=0
-        pass       
+    
     for p in recur:
         try:
             adjis=ItemAdjustment.objects.get(item=p.iname)
             p.aditem=adjis.adjusted_quantity 
+           
         except ItemAdjustment.DoesNotExist:  
             p.aditem=0
-
+   
     for i in estim:
         try:
            adjia=ItemAdjustment.objects.get(item=i.item_name)
            i.aditem=adjia.adjusted_quantity 
         except ItemAdjustment.DoesNotExist:  
-            i.aditem=0   
+            i.aditem=0 
+      
     for i in sale:
         try:
             adjib=ItemAdjustment.objects.get(item=i.product)
@@ -16472,7 +16475,126 @@ def inven_details(request):
            adjid=ItemAdjustment.objects.get(item=i.product)
            i.aditem=adjid.adjusted_quantity 
         except ItemAdjustment.DoesNotExist:  
+            i.aditem=0
+    for i in credit:
+        try:
+           adjie=ItemAdjustment.objects.get(item=i.product)
+           i.aditem=adjie.adjusted_quantity 
+        except ItemAdjustment.DoesNotExist:  
             i.aditem=0  
+    for i in bills:
+        try:
+           adjif=ItemAdjustment.objects.get(item=i.product)
+           i.aditem=adjif.adjusted_quantity 
+        except ItemAdjustment.DoesNotExist:  
+            i.aditem=0  
+    for i in recubills:
+        try:
+           adjig=ItemAdjustment.objects.get(item=i.product)
+           i.aditem=adjig.adjusted_quantity 
+        except ItemAdjustment.DoesNotExist:  
+            i.aditem=0          
+    for i in vendorbill:
+        try:
+           adjih=ItemAdjustment.objects.get(item=i.product)
+           i.aditem=adjih.adjusted_quantity 
+        except ItemAdjustment.DoesNotExist:  
+            i.aditem=0 
+    for i in pars:
+        try:
+           adjii=ItemAdjustment.objects.get(item=i.product)
+           i.aditem=adjii.adjusted_quantity 
+        except ItemAdjustment.DoesNotExist:  
+            i.aditem=0
+
+    for i in inv:
+        try:
+            sto=AddItem.objects.get(Name=i.product)
+            i.stitem=sto.stock
+            i.close=i.stitem-i.quantity+ i.aditem
+            print(i.stitem)
+        except ItemAdjustment.DoesNotExist:  
+            i.stitem=0   
+    for i in recur:
+        try:
+            stos=AddItem.objects.get(Name=i.iname)
+            i.stitem=stos.stock
+            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            print(i.stitem)
+        except ItemAdjustment.DoesNotExist:  
+            i.stitem=0 
+    for i in estim:
+        try:
+            stoa=AddItem.objects.get(Name=i.iname)
+            i.stitem=stoa.stock
+            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            print(i.stitem)
+        except ItemAdjustment.DoesNotExist:  
+            i.stitem=0
+    for i in sale:
+        try:
+            stob=AddItem.objects.get(Name=i.iname)
+            i.stitem=stob.stock
+            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            print(i.stitem)
+        except ItemAdjustment.DoesNotExist:  
+            i.stitem=0
+    for i in challan:
+        try:
+            stoc=AddItem.objects.get(Name=i.iname)
+            i.stitem=stoc.stock
+            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            print(i.stitem)
+        except ItemAdjustment.DoesNotExist:  
+            i.stitem=0
+    for i in vencredit:
+        try:
+            stod=AddItem.objects.get(Name=i.iname)
+            i.stitem=stod.stock
+            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            print(i.stitem)
+        except ItemAdjustment.DoesNotExist:  
+            i.stitem=0
+    for i in bills:
+        try:
+            stoe=AddItem.objects.get(Name=i.iname)
+            i.stitem=stoe.stock
+            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            print(i.stitem)
+        except ItemAdjustment.DoesNotExist:  
+            i.stitem=0
+    for i in credit:
+        try:
+            stof=AddItem.objects.get(Name=i.iname)
+            i.stitem=stof.stock
+            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            print(i.stitem)
+        except ItemAdjustment.DoesNotExist:  
+            i.stitem=0
+    for i in recubills:
+        try:
+            stog=AddItem.objects.get(Name=i.iname)
+            i.stitem=stog.stock
+            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            print(i.stitem)
+        except ItemAdjustment.DoesNotExist:  
+            i.stitem=0
+    for i in vendorbill:
+        try:
+            stoh=AddItem.objects.get(Name=i.iname)
+            i.stitem=stoh.stock
+            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            print(i.stitem)
+        except ItemAdjustment.DoesNotExist:  
+            i.stitem=0
+    for i in pars:
+        try:
+            stoi=AddItem.objects.get(Name=i.iname)
+            i.stitem=stoi.stock
+            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            print(i.stitem)
+        except ItemAdjustment.DoesNotExist:  
+            i.stitem=0
     context={
         'user':user,
        
