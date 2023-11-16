@@ -16415,23 +16415,23 @@ def tax_summary_customize_general(request):
     return render(request,'tax_summary_customize_general.html')
 
 def inven_details(request):
+    user=request.user.id
     company = company_details.objects.get(user=request.user)
-    item=AddItem.objects.all()
+    item=AddItem.objects.filter(user=user)
     inv=invoice_item.objects.all()
     recur=recur_itemtable.objects.all()
     reta=RetainerInvoice.objects.all()
-    pars=Purchase_Order_items.objects.all()
+    pars=Purchase_Order_items.objects.filter(user=user)
     estim=EstimateItems.objects.all()
     sale=sales_item.objects.all()
     challan=ChallanItems.objects.all()
     credit=Credititem.objects.all()
     vencredit=Vendor_invoice_item.objects.all()
     bills=PurchaseBillItems.objects.all()
-    recubills=recurring_bills_items.objects.all()
-    vendorbill=Vendor_Credits_Bills_items_bills.objects.all()
-    user=request.user.id
-    adj=Adjustment.objects.all()
-    adjItems=ItemAdjustment.objects.all()
+    recubills=recurring_bills_items.objects.filter(user=user)
+    vendorbill=Vendor_Credits_Bills_items_bills.objects.filter(user=user)
+    adj=Adjustment.objects.filter(user=user)
+    adjItems=ItemAdjustment.objects.filter(user=user)
   
     for i in inv:
         print(i.product)
@@ -16442,7 +16442,7 @@ def inven_details(request):
            
         except ItemAdjustment.DoesNotExist:  
             i.aditem=0
-    
+        
     for p in recur:
         try:
             adjis=ItemAdjustment.objects.get(item=p.iname)
@@ -16458,12 +16458,7 @@ def inven_details(request):
         except ItemAdjustment.DoesNotExist:  
             i.aditem=0 
       
-    for i in sale:
-        try:
-            adjib=ItemAdjustment.objects.get(item=i.product)
-            i.aditem=adjib.adjusted_quantity  
-        except ItemAdjustment.DoesNotExist:  
-            i.aditem=0  
+  
     for i in challan:
         try:
            adjic=ItemAdjustment.objects.get(item=i.item_name)
@@ -16478,31 +16473,31 @@ def inven_details(request):
             i.aditem=0
     for i in credit:
         try:
-           adjie=ItemAdjustment.objects.get(item=i.product)
+           adjie=ItemAdjustment.objects.get(item=i.item_name)
            i.aditem=adjie.adjusted_quantity 
         except ItemAdjustment.DoesNotExist:  
             i.aditem=0  
     for i in bills:
         try:
-           adjif=ItemAdjustment.objects.get(item=i.product)
+           adjif=ItemAdjustment.objects.get(item=i.item_name)
            i.aditem=adjif.adjusted_quantity 
         except ItemAdjustment.DoesNotExist:  
             i.aditem=0  
     for i in recubills:
         try:
-           adjig=ItemAdjustment.objects.get(item=i.product)
+           adjig=ItemAdjustment.objects.get(item=i.item)
            i.aditem=adjig.adjusted_quantity 
         except ItemAdjustment.DoesNotExist:  
             i.aditem=0          
     for i in vendorbill:
         try:
-           adjih=ItemAdjustment.objects.get(item=i.product)
+           adjih=ItemAdjustment.objects.get(item=i.item)
            i.aditem=adjih.adjusted_quantity 
         except ItemAdjustment.DoesNotExist:  
             i.aditem=0 
     for i in pars:
         try:
-           adjii=ItemAdjustment.objects.get(item=i.product)
+           adjii=ItemAdjustment.objects.get(item=i.item)
            i.aditem=adjii.adjusted_quantity 
         except ItemAdjustment.DoesNotExist:  
             i.aditem=0
@@ -16511,89 +16506,101 @@ def inven_details(request):
         try:
             sto=AddItem.objects.get(Name=i.product)
             i.stitem=sto.stock
-            i.close=i.stitem-i.quantity+ i.aditem
-            print(i.stitem)
-        except ItemAdjustment.DoesNotExist:  
+            if i.stitem != 'NULL' or i.stitem != " ":
+                i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+                print(i.stitem)
+        except AddItem.DoesNotExist:  
             i.stitem=0   
     for i in recur:
         try:
             stos=AddItem.objects.get(Name=i.iname)
             i.stitem=stos.stock
-            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
-            print(i.stitem)
-        except ItemAdjustment.DoesNotExist:  
+            if i.stitem != 'NULL' or i.stitem != " ":
+               i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            
+        except AddItem.DoesNotExist:  
             i.stitem=0 
     for i in estim:
         try:
-            stoa=AddItem.objects.get(Name=i.iname)
+            stoa=AddItem.objects.get(Name=i.item_name)
             i.stitem=stoa.stock
-            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
-            print(i.stitem)
-        except ItemAdjustment.DoesNotExist:  
+            if i.stitem != 'NULL' or i.stitem != " ":
+               i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+          
+        except AddItem.DoesNotExist:  
             i.stitem=0
     for i in sale:
         try:
-            stob=AddItem.objects.get(Name=i.iname)
+            stob=AddItem.objects.get(Name=i.product)
             i.stitem=stob.stock
-            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
-            print(i.stitem)
-        except ItemAdjustment.DoesNotExist:  
+            if i.stitem != 'NULL' or i.stitem != " ":
+               i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            
+        except AddItem.DoesNotExist:  
             i.stitem=0
     for i in challan:
         try:
-            stoc=AddItem.objects.get(Name=i.iname)
+            stoc=AddItem.objects.get(Name=i.item_name)
             i.stitem=stoc.stock
-            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
-            print(i.stitem)
-        except ItemAdjustment.DoesNotExist:  
+            if i.stitem != 'NULL' or i.stitem != " ":
+               i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            
+        except AddItem.DoesNotExist:  
             i.stitem=0
     for i in vencredit:
         try:
-            stod=AddItem.objects.get(Name=i.iname)
+            stod=AddItem.objects.get(Name=i.product)
             i.stitem=stod.stock
-            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
-            print(i.stitem)
-        except ItemAdjustment.DoesNotExist:  
+            if i.stitem != 'NULL' or i.stitem != " ":
+                i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            
+        except AddItem.DoesNotExist:  
             i.stitem=0
     for i in bills:
         try:
-            stoe=AddItem.objects.get(Name=i.iname)
+            stoe=AddItem.objects.get(Name=i.item_name)
             i.stitem=stoe.stock
-            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
-            print(i.stitem)
-        except ItemAdjustment.DoesNotExist:  
+            if i.stitem != 'NULL' or i.stitem != " ":
+                i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            
+        except AddItem.DoesNotExist:  
             i.stitem=0
     for i in credit:
         try:
-            stof=AddItem.objects.get(Name=i.iname)
+            stof=AddItem.objects.get(Name=i.item_name)
             i.stitem=stof.stock
-            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
-            print(i.stitem)
-        except ItemAdjustment.DoesNotExist:  
+            if i.stitem != 'NULL' or i.stitem != " ":
+                i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            
+        except AddItem.DoesNotExist:  
             i.stitem=0
-    for i in recubills:
-        try:
-            stog=AddItem.objects.get(Name=i.iname)
-            i.stitem=stog.stock
-            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
-            print(i.stitem)
-        except ItemAdjustment.DoesNotExist:  
-            i.stitem=0
+  
     for i in vendorbill:
         try:
-            stoh=AddItem.objects.get(Name=i.iname)
+            stoh=AddItem.objects.get(Name=i.item)
             i.stitem=stoh.stock
-            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
-            print(i.stitem)
-        except ItemAdjustment.DoesNotExist:  
+            if i.stitem != 'NULL' or i.stitem != " ":
+                i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+          
+        except AddItem.DoesNotExist:  
             i.stitem=0
     for i in pars:
         try:
-            stoi=AddItem.objects.get(Name=i.iname)
+            stoi=AddItem.objects.get(Name=i.item)
             i.stitem=stoi.stock
-            i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
-            print(i.stitem)
-        except ItemAdjustment.DoesNotExist:  
+            if i.stitem != 'NULL' or i.stitem != " ":
+                i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+           
+        except AddItem.DoesNotExist:  
+            i.stitem=0
+    for i in recubills:
+        try:
+            stog=AddItem.objects.get(Name=i.item)
+            i.stitem=stog.stock
+            if i.stitem != 'NULL' or i.stitem != " ":
+                i.close=float(i.stitem)-float(i.quantity)+ float(i.aditem)
+            
+        except AddItem.DoesNotExist:  
             i.stitem=0
     context={
         'user':user,
@@ -16657,6 +16664,14 @@ def inven_salecount(request):
     count2=0
     count3=0
     count4=0
+    for i in inv:
+        count +=1
+        print(count)
+        if i.inv.grandtotal != 'NULL' or i.inv.grandtotal != " ":
+            totalsale += float(i.inv.grandtotal)
+        if i.inv.subtotal != 'NULL' or i.inv.subtotal!= " ":
+            subtotalsale += float(i.inv.subtotal)
+    
     for i in rinv:
         count1 +=1
         print(count)
@@ -16665,12 +16680,7 @@ def inven_salecount(request):
             
         if i.ri.sub_total != 'NULL' or i.ri.sub_total != " ":
             subtotalsale1 += float(i.ri.sub_total)
-    for i in inv:
-        count +=1
-        if i.inv.grandtotal != 'NULL' or i.inv.grandtotal != " ":
-            totalsale += float(i.inv.grandtotal)
-        if i.inv.subtotal != 'NULL' or i.inv.subtotal!= " ":
-            subtotalsale += float(i.inv.subtotal)
+   
         
     for i in estim:
         count2 +=1
@@ -16765,7 +16775,7 @@ def productsale_filter(request):
         start=str(s)
         e=request.POST['d2']
         end=str(e)
-        inv = invoice_item.objects.filter(inv__due_date__range=[start,end])
+        inv = invoice_item.objects.filter(inv__inv_date__range=[start,end])
         rinv = recur_itemtable.objects.filter(ri__start__range=[start,end])
         estim=EstimateItems.objects.filter(estimate__estimate_date__range=[start,end])
         sorder=sales_item.objects.filter(sale__sales_date__range=[start,end])
