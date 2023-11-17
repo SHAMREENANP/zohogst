@@ -16921,4 +16921,65 @@ def product_graphview_btn(request, pk):
     }
     
     return render(request, "product_graphview.html", context)
+      
+def productname_filter(request):
+    company = company_details.objects.get(user=request.user)
+    inv = invoice_item.objects.all()
+    rinv =recur_itemtable.objects.all()
     
+    totalsale=0
+    totalsale1=0
+   
+    subtotalsale=0
+    subtotalsale1=0
+   
+    if request.method == 'POST':
+       
+        Name= AddItem.objects.get(Name)
+        inv = invoice_item.objects.filter(product=Name)
+        rinv = recur_itemtable.objects.filter(name=Name)
+       
+    for i in rinv:
+      
+         
+        if i.ri.total != 'NULL' or i.ri.total != " ":
+            totalsale1 += float(i.ri.total)
+            
+        if i.ri.sub_total != 'NULL' or i.ri.sub_total != " ":
+            subtotalsale1 += float(i.ri.sub_total)
+    for i in inv:
+        
+        if i.inv.grandtotal != 'NULL' or i.inv.grandtotal != " ":
+            totalsale += float(i.inv.grandtotal)
+        if i.inv.subtotal != 'NULL' or i.inv.subtotal!= " ":
+            subtotalsale += float(i.inv.subtotal)
+        
+    
+    sale=totalsale
+    sale1=totalsale1
+    total=totalsale+totalsale1
+    subsale=subtotalsale
+    subsale1=subtotalsale1
+    subtotal=subtotalsale+subtotalsale1
+    sale='{:.2f}'.format(sale)
+    sale1='{:.2f}'.format(sale1)
+    total='{:.2f}'.format(total)
+    subsale='{:.2f}'.format(subsale)
+    subsale1='{:.2f}'.format(subsale1)
+    subtotal='{:.2f}'.format(subtotal)
+    context={
+       
+        
+        'rinv':rinv,
+        'inv':inv,
+        'company':company,
+        'total':total,
+        'subtotal':subtotal,
+        'sale':sale,
+        'sale1':sale1,
+    
+        'subsale':subsale,
+        'subsale1':subsale1,
+      
+    }
+    return render(request, 'productsaletwo', context)  
