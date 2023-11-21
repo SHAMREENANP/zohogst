@@ -16637,6 +16637,7 @@ def productsalereport(request):
             pdebit_list.append(pd)
     
    
+    
 
     context = {'company':company,"inv":inv,"rinv":rinv,'item':item,'pdebit':pdebit_list
         }
@@ -16648,7 +16649,7 @@ def inven_salecount(request):
     rinv=recur_itemtable.objects.all()
     estim=EstimateItems.objects.all()
     sorder=sales_item.objects.all()
-    vencredit=Vendor_invoice_item.objects.all()
+    credit=Credititem.objects.all()
     totalsale=0
     totalsale1=0
     totalsale2=0
@@ -16694,19 +16695,20 @@ def inven_salecount(request):
             totalsale3 += float(i.sale.grandtotal)
         if i.sale.subtotal != 'NULL' or i.sale.subtotal!= " ":
             subtotalsale3 += float(i.sale.subtotal)
-    for i in vencredit:
+    for i in credit:
+       
         count4 +=1
-        if i.inv.grandtotal != 'NULL' or i.inv.grandtotal != " ":
-            totalsale4 += float(i.inv.grandtotal)
-        if i.inv.subtotal != 'NULL' or i.inv.subtotal!= " ":
-            subtotalsale4 += float(i.inv.subtotal)
-          
+        if i.creditnote.total != 'NULL' or i.creditnote.total != " ":
+            totalsale4 += float(i.creditnote.total)
+        if i.creditnote.subtotal != 'NULL' or i.creditnote.subtotal!= " ":
+            subtotalsale4 += float(i.creditnote.subtotal)  
 
     sale=totalsale
     sale1=totalsale1
     sale2=totalsale2
     sale3=totalsale3
     sale4=totalsale4
+    print(sale4)
     subsale=subtotalsale
     subsale1=subtotalsale1
     subsale2=subtotalsale2
@@ -16735,7 +16737,7 @@ def inven_salecount(request):
         'estim':estim,
         'sorder':sorder,
         
-        'vencredit':vencredit,
+        'credit':credit,
         'sale':sale,
         'sale1':sale1,
         'sale2':sale2,
@@ -16754,7 +16756,7 @@ def productsale_filter(request):
     rinv =recur_itemtable.objects.all()
     estim=EstimateItems.objects.all()
     sorder=sales_item.objects.all()
-    vencredit=Vendor_invoice_item.objects.all()
+    credit=Credititem.objects.all()
     totalsale=0
     totalsale1=0
     totalsale2=0
@@ -16779,7 +16781,7 @@ def productsale_filter(request):
         rinv = recur_itemtable.objects.filter(ri__start__range=[start,end])
         estim=EstimateItems.objects.filter(estimate__estimate_date__range=[start,end])
         sorder=sales_item.objects.filter(sale__sales_date__range=[start,end])
-        vencredit=Vendor_invoice_item.objects.filter(inv__vendor_date__range=[start,end])
+        credit=Credititem.objects.filter(creditnote__creditnote_date__range=[start,end])
     for i in rinv:
         count1 +=1
         print(count)
@@ -16813,17 +16815,18 @@ def productsale_filter(request):
             totalsale3 += float(i.sale.grandtotal)
         if i.sale.subtotal != 'NULL' or i.sale.subtotal!= " ":
             subtotalsale3 += float(i.sale.subtotal)
-    for i in vencredit:
+    for i in credit:
         count4 +=1
-        if i.inv.grandtotal != 'NULL' or i.inv.grandtotal != " ":
-            totalsale3 += float(i.sale.grandtotal)
-        if i.inv.subtotal != 'NULL' or i.inv.subtotal!= " ":
-            subtotalsale3 += float(i.inv.subtotal)
+        if i.creditnote.total != 'NULL' or i.creditnote.total != " ":
+            totalsale4 += float(i.creditnote.total)
+        if i.creditnote.subtotal != 'NULL' or i.creditnote.subtotal!= " ":
+            subtotalsale4 += float(i.creditnote.subtotal)
     sale=totalsale
     sale1=totalsale1
     sale2=totalsale2
     sale3=totalsale3
     sale4=totalsale4
+    print(sale4)
     subsale=subtotalsale
     subsale1=subtotalsale1
     subsale2=subtotalsale2
@@ -16852,7 +16855,7 @@ def productsale_filter(request):
         'company':company,
         'estim':estim,
         'sorder':sorder,
-        'vencredit':vencredit,
+        'credit':credit,
         'sale':sale,
         'sale1':sale1,
         'sale2':sale2,
@@ -16921,27 +16924,32 @@ def product_graphview_btn(request, pk):
     }
     
     return render(request, "product_graphview.html", context)
-      
-def productname_filter(request):
-    company = company_details.objects.get(user=request.user)
-    inv = invoice_item.objects.all()
-    rinv =recur_itemtable.objects.all()
-    
+
+
+def productname_filter(request,product):
+    company=company_details.objects.get(user=request.user)
+    user_id=request.user
+    inv=invoice_item.objects.filter(product=product)
+    n=AddItem.objects.get(Name=product)
+
+    itemn=AddItem.objects.all()
+    name=product
+    print(name)
     totalsale=0
     totalsale1=0
    
     subtotalsale=0
     subtotalsale1=0
-   
     if request.method == 'POST':
-       
-        Name= AddItem.objects.get(Name)
-        inv = invoice_item.objects.filter(product=Name)
-        rinv = recur_itemtable.objects.filter(name=Name)
-       
+        s=request.POST['d1']
+        start=str(s)
+        e=request.POST['d2']
+        end=str(e)
+        inv =  invoice_item.objects.filter(product=product,inv__due_date__range=[start,end])
+        rinv =recur_itemtable.objects.filter(iname=product,ri__start__range=[start,end])
+        products=AddItem.objects.all()
+        n=AddItem.objects.get(Name=product)
     for i in rinv:
-      
-         
         if i.ri.total != 'NULL' or i.ri.total != " ":
             totalsale1 += float(i.ri.total)
             
@@ -16968,11 +16976,15 @@ def productname_filter(request):
     subsale1='{:.2f}'.format(subsale1)
     subtotal='{:.2f}'.format(subtotal)
     context={
-       
-        
-        'rinv':rinv,
-        'inv':inv,
-        'company':company,
+
+       "allproduct":inv,
+       'rinv':rinv,
+       'inv':inv,
+       'name':name,
+       "n":n,
+       "product":products,
+
+       'company':  company, 
         'total':total,
         'subtotal':subtotal,
         'sale':sale,
@@ -16980,6 +16992,63 @@ def productname_filter(request):
     
         'subsale':subsale,
         'subsale1':subsale1,
+        
+        }
+    return render(request, 'productsaletwo.html', context)   
+def sales_by_item(request):
+    cmp1 = company_details.objects.get(user=request.user)
+   
       
+    cust = AddItem.objects.all()
+    
+    inv=invoice_item.objects.all()
+   
+  
+    recinv= recur_itemtable.objects.all()
+
+ 
+
+    totalsale=0
+    totalpurchase=0
+    totalexp=0
+    totalpay=0
+    totalpayr=0
+    salesreturn=0
+    purchasereturn=0
+
+    amount=0
+
+ 
+        
+
+  
+    for i in recinv:
+        if i.ri.total != 'NULL' or i.ri.total != " ":
+            totalsale += float(i.ri.total)
+   
+    
+    for i in inv:
+        if i.inv.grandtotal != 'NULL' or i.inv.grandtotal != " ":
+            totalsale += float(i.inv.grandtotal)
+        
+        
+   
+    print(totalpurchase)
+    print(purchasereturn)
+    
+    sale=totalsale-salesreturn
+    purchase = totalpurchase-purchasereturn
+    
+    sale='{:.2f}'.format(sale)
+    purchase='{:.2f}'.format(purchase)
+    totalexp='{:.2f}'.format(totalexp)
+    totalpay='{:.2f}'.format(totalpay)
+    totalpayr='{:.2f}'.format(totalpayr)
+
+
+    context = {
+        'cust': cust,  'cmp1': cmp1,'inv':inv,'recinv':recinv,
+        'sale':sale,'purchase':purchase,
+        'exp':totalexp,'totalpay':totalpay,'totalpayr':totalpayr
     }
-    return render(request, 'productsaletwo', context)  
+    return render(request, 'sales_by_item.html',context)
