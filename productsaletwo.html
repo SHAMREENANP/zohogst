@@ -6,6 +6,61 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.0/html2canvas.min.js"></script>
 <style>
+    .tr{
+        cursor: pointer;
+    }
+
+    @media print{
+    body{
+        visibility: hidden;
+    }
+
+    #printtable{
+        visibility: visible;
+        width: auto;
+        height: auto;
+        margin-top: -600px;
+        margin-left: -100px;
+    }
+}
+h2{
+    font-size: x-large;
+    font-family: 'Segoe UI', Tahoma,;
+    color:#dfe4e9;
+  }
+  .card{
+        background: none;
+    }
+    tbody tr td{
+        border: none;
+        border-top: none;
+        border-style: none;
+        color:azure;
+        justify-content: center;
+    }
+ 
+
+tr:hover {
+  background-color : rgb(94, 94, 101);
+  color: aliceblue;
+cursor: pointer
+}
+    .btn {
+  background-color: white;
+  border: none;
+  color: green;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: white;
+}
+
+</style>
+<style>
     .bar {
         align-items: center;
         display: flex;
@@ -40,8 +95,10 @@
         <div class="card-body">
             <div class="card-title" id="div2">
                 <center>
+                    
                     <center><h2 class="mb-0" style="font-size: 35px;color: rgb(218, 164, 48);">{{ company.company_name  }}</h2></center><br>
-                    <h2 class="my-4 text-uppercase" id="headline"style="font-size: 40px;color: rgb(218, 164, 48);">PRODUCT SALE REPORT </h2>
+                <center><label  id="headline" style="font-size: 40px;color: rgb(218, 164, 48);">PRODUCT SALE REPORT </label></center>
+                <center><p id="hdate" style="font-size: 20px;color: rgb(218, 164, 48);"></p></center>
                     <div class="display">
                         <div id="d1" style="display: inline-block;"></div>
                         <div id="d2" style="display: inline-block;"></div>
@@ -75,15 +132,15 @@
             <div class="px-2 dropdown">
                     
                
-                <input name="party" list="party" class="form-control" id="searchInput" placeholder="Search Items..." style="color: rgb(255, 255, 255);background: transparent;width: 20vw;">
+                <input name="party" list="party"class="form-control" id="searchInput" placeholder="Search Items..." style="color: rgb(255, 255, 255);background: transparent;width: 20vw;">
                         <datalist id="party" >
                           {% for i in item %}
-                           <option value="{{i.Name}}">
+                           <option value="{{i.Name}}" >
                               {% endfor %}
                            
                       </datalist>
               
-
+</form>
             </div>
             </div>
         </div>
@@ -92,7 +149,7 @@
         <div class="card-body">
             <div class="container-fluid">
 
-                <table class="table table-bordered table-striped mt-4"
+                <table class="table table-responsive-md mt-4 table-bordered"
                     id="myTable">
                     <thead>
                         <tr>
@@ -107,25 +164,25 @@
                     <tbody>
                         {% for i in inv %}
                                         <tr class="tr">
-                                            <td class="center text-white" style="display: none;">{{ i.inv.inv_date | date:'d-m-Y'}}</td> 
-                                            <td class="center text-white">{{ i.product}}</td>
-                                            <td class="center text-white"style="display: none;">invoice</td> 
-                                            <td class="center text-white">{{i.quantity}}</td> 
+                                            <td style="display: none;">{{ i.inv.inv_date | date:'d-m-Y'}}</td> 
+                                            <td >{{ i.product}}</td>
+                                            <td style="display: none;">invoice</td> 
+                                            <td >{{i.quantity}}</td> 
                                             
-                                            <td class="center text-white">{{i.inv.subtotal}}</td>         
-                                            <td class="center text-white">{{i.inv.grandtotal}}</td>   
+                                            <td >{{i.inv.subtotal}}</td>         
+                                            <td>{{i.inv.subtotal}}</td>   
                                                 
                                         </tr></a>
                                     {% endfor %}
                                   
                                     {% for r in pdebit %}
                                         <tr class="tr">
-                                            <td class="center text-white" style="display: none;" >{{ r.ri.start| date:'d-m-Y'}}</td> 
-                                            <td class="center text-white">{{ r.iname}}</td>  
-                                            <td class="center text-white" style="display: none;" >reccuring invoice</td> 
-                                            <td class="center text-white">{{ r.quantity}}</a></td>
-                                            <td class="center text-white">{{r.ri.sub_total }}</td>         
-                                            <td class="center text-white">{{r.ri.total}}</td>          
+                                            <td  style="display: none;" >{{ r.ri.start| date:'d-m-Y'}}</td> 
+                                            <td >{{ r.iname}}</td>  
+                                            <td  style="display: none;" >reccuring invoice</td> 
+                                            <td >{{ r.quantity}}</a></td>
+                                            <td >{{r.ri.sub_total }}</td>         
+                                            <td>{{r.ri.total}}</td>          
                                              
                                         </tr></a>
                                     {% endfor %}
@@ -156,21 +213,24 @@
                         <div class="col-4 "style="display: none;">Total Sale: <p id="sales" style="font-size: 19px;">₹<span
                                     id="totalSale"></span></p>
                         </div>
-                        <div class="col-4"style=" color: rgb(218, 164, 48);">Total Sales Without Tax:<p id="expense" style="font-size: 19px;">
-                                ₹<span id="totalSalewithoutCreditnotes"></span></p>
+                        <div class="col-4"style="color: rgb(218, 164, 48);">Total Sales Without Tax:<p id="expense" style="font-size: 19px;">
+                                ₹<span id="totalSalewithoutCreditnotes">  </span></p>
                         </div>
-                        <div class="col-4"style=" color: rgb(218, 164, 48);">Total Sales With Tax :<p id="purchase" style="font-size: 19px;">₹<span
-                                    id="grantTotal"></span>
+                        <div class="col-4"style="color: rgb(218, 164, 48);">Total Sales With Tax :<p id="purchase" style="font-size: 19px;">₹<span
+                             id="grantTotal">    
+                                     </span>
                             </p>
                         </div>
 
                     </div>
 
                 </div>
+               
                 <div class="col-2 text-center">
                     <h5 style="padding-top: 100px;color: rgb(218, 164, 48);">Grand Total</h5>
                     <h4 id="totvalue"style=" color: rgb(218, 164, 48);"><span id="superTotal"></span></h4>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -272,18 +332,115 @@
         // Show/hide the row based on the search results
         tr[i].style.display = rowVisible ? "" : "none";
       }
+      
     }
   
     // Attach the search function to the input field's "input" event
     document.getElementById("searchInput").addEventListener("input", searchTable);
+    const inputElement = $('input[name="party"]');
+
+
+// Event handler for input change
+inputElement.on('input', function () {
+    const inputValue = $(this).val();
+
+    let total = 0;
+    let totalMoneyin = 0;
+    let totalMoneyout = 0;
+    let totalexpense = 0;
+    let totalsales = 0;
+    let salesreturn = 0;
+    let sales = 0;
+    let totalpurchase = 0;
+    let purchasereturn = 0;
+    let purchase = 0;
+
+
+
+
+    // Iterate through the table rows
+    $('#myTable tbody tr').each(function () {
+        const type = $(this).find('td:eq(2)').text().trim();
+        const name = $(this).find('td:eq(1)').text().trim();
+        const amount = parseFloat($(this).find('td:eq(5)').text());
+        const amount2 = parseFloat($(this).find('td:eq(4)').text());
+        
+        // Check if the 'type' is 'invoice' and matches the input value
+       
+        if ((type === 'invoice' || type === 'reccuring invoice' ) && name === inputValue) {
+            // Add the 'amount' to the total sum
+            totalsales += amount;
+            console.log(totalsales);
+        }
+        if ((type === 'invoice' || type === 'reccuring invoice' ) && name === inputValue) {
+            // Add the 'amount' to the total sum
+            totalMoneyout += amount2;
+            console.log("total="+totalMoneyout);
+        }
+        
+        if (type === 'credit note' && name === inputValue) {
+            // Add the 'amount' to the total sum
+            salesreturn += amount;
+            console.log(salesreturn);
+        }
+      
+        if (name === inputValue) {
+            total += amount;
+            console.log('amount is' + amount);
+        }
+        
+
+        sales = totalsales - salesreturn
+        sales= sales.toFixed(2)
+        purchase = totalpurchase - purchasereturn
+        purchase= purchase.toFixed(2)
+       
+        if (sales < 0) {
+            sales = Math.abs(sales); // Convert to positive value
+        }
+        if (purchase < 0) {
+            purchase = Math.abs(purchase); // Convert to positive value
+        }
+        document.getElementById("totalSalewithoutCreditnotes").textContent=totalMoneyout;
+        document.getElementById("grantTotal").textContent=totalsales;
+    });
+
+    if (inputValue != '') {
+
+        // Display the total sum
+        $('#moneyin').text('₹' + totalMoneyin);
+        $('#moneyout').text('₹' + totalMoneyout);
+        $('#expense').text('₹' + totalexpense);
+        $('#sales').text('₹' + sales);
+        $('#purchase').text('₹' + purchase);
+        $("#totvalue").text('₹' + total.toFixed(2));
+        $("#tot").text('₹' + total.toFixed(2));
+        $("#balance").text('₹' + total.toFixed(2));
+    } else if (inputValue == '' || inputValue.length == 1) {
+        location.reload();
+    }
+    if (inputValue === '' || inputValue.length == 1) {
+        head = 'PRODUCT SALE REPORT'
+    }
+    else {
+        console.log(inputValue);
+        head = inputValue + ' SALE REPORT';
+        head = head.toUpperCase();
+    }
+    $('#headline').text(head);
+
+
+
+});
         // Click event handler for dropdown menu items
         $rows.click(function () {
-            var txtValue = $(this).text().trim();
+           
+            var name  = $(this).text().trim();
             var head = document.getElementById('headline');
-            head.textContent = txtValue +"SALE REPORT ";
+            head.textContent = name  +"SALE REPORT ";
 
             var dRows = $(filteredRows).show().filter(function () {
-                return $(this).text().indexOf(txtValue) === -1;
+                return $(this).text().indexOf(name) === -1;
             }).hide();
 
             var remainingRows = $(filteredRows).not(dRows);
@@ -399,6 +556,32 @@
         }
 
         calculateGrantTotalByMonth(originalRows);
+function calculateGranttotal(rows) {
+            totalgrantTotal = 0;
+            totalCreditnotegranttotal = 0;
+
+            for (let row of rows) {
+                let grantTotalCell = row.children[5];
+                let grantTotal = parseFloat(grantTotalCell.textContent);
+                totalgrantTotal += grantTotal;
+
+                let typeCell = row.children[2];
+
+                if (typeCell.textContent.trim() === "Credit Notes") {
+                    let creditgranttotalCell = row.children[5];
+                    let creditgranttotal = parseFloat(creditgranttotalCell.textContent);
+                    totalCreditnotegranttotal += creditgranttotal;
+                }
+            }
+
+            var superTotal = document.getElementById('superTotal');
+            var roundedNumber = totalgrantTotal - totalCreditnotegranttotal;
+            superTotal.textContent = roundedNumber.toFixed(2);
+
+            var gtTag = document.getElementById('grantTotal');
+            gtTag.textContent = totalgrantTotal.toFixed(2);
+        }
+        calculateGranttotal(originalRows);
 
     });
 
@@ -451,8 +634,34 @@
 
 
 </script>
-
-
+<script>
+    var $rows = $('table tbody tr');
+    $('#party').keyup(function() {
+        var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+        $rows.hide().filter(function() {
+            var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+            return ~text.indexOf(val);
+        }).show();
+        calculateTotalBillAmount();
+    });
+    function calculateTotalBillAmount() {
+      const visibleRows = Array.from(dataTable.getElementsByTagName('tbody')[1].getElementsByTagName('tr'))
+          .filter(row => row.style.display !== 'none');
+    
+      let totalBillAmount = 0;
+    
+      visibleRows.forEach(row => {
+          const billAmountCell = row.querySelector('td:nth-child(4)');
+          const billAmount = parseFloat(billAmountCell.textContent);
+          if (!isNaN(billAmount)) {
+              totalBillAmount += billAmount;
+          }
+      });
+    
+      const totalBillAmountElement = document.getElementById('total-bill-amount');
+      totalBillAmountElement.textContent = `Total Bill Amount: ${totalBillAmount.toFixed(2)}`;
+    }
+</script>
 
 
 {% endblock %}
