@@ -16418,16 +16418,16 @@ def inven_details(request):
     user=request.user.id
     company = company_details.objects.get(user=request.user)
     item=AddItem.objects.filter(user=user)
-    inv=invoice_item.objects.all()
-    recur=recur_itemtable.objects.all()
-    reta=RetainerInvoice.objects.all()
+    inv=invoice_item.objects.filter(inv__user=user)
+    recur=recur_itemtable.objects.filter(ri__user=user)
+  
     pars=Purchase_Order_items.objects.filter(user=user)
-    estim=EstimateItems.objects.all()
-    sale=sales_item.objects.all()
-    challan=ChallanItems.objects.all()
-    credit=Credititem.objects.all()
-    vencredit=Vendor_invoice_item.objects.all()
-    bills=PurchaseBillItems.objects.all()
+    estim=EstimateItems.objects.filter(estimate__user=user)
+    sale=sales_item.objects.filter(sale__customer__user=user)
+    challan=ChallanItems.objects.filter(chellan__user=user)
+    credit=Credititem.objects.filter(creditnote__user=user)
+    vencredit=Vendor_invoice_item.objects.filter(inv__user=user)
+    bills=PurchaseBillItems.objects.filter(purchase_bill__user=user)
     recubills=recurring_bills_items.objects.filter(user=user)
     vendorbill=Vendor_Credits_Bills_items_bills.objects.filter(user=user)
     adj=Adjustment.objects.filter(user=user)
@@ -16610,7 +16610,7 @@ def inven_details(request):
         'item':item,
         'recur':recur,
         'inv':inv,
-        'reta':reta,
+        
         'pars':pars,
         'company':company,
         'estim':estim,
@@ -16624,10 +16624,11 @@ def inven_details(request):
     }
     return render(request,'inventorydetails.html', context)
 def productsalereport(request):
+    user=request.user.id
     company = company_details.objects.get(user=request.user)
-    item=AddItem.objects.all()
-    inv = invoice_item.objects.all()
-    rinv = Recurring_invoice.objects.all()
+    item=AddItem.objects.filter(user=user)
+    inv = invoice_item.objects.filter(inv__user=user)
+    rinv = Recurring_invoice.objects.filter(user=user)
     pdebit_list = [] 
     for i in rinv:
         pdebit = recur_itemtable.objects.filter(ri=i)
@@ -16643,13 +16644,14 @@ def productsalereport(request):
         }
     return render(request, 'productsaletwo.html', context)
 def inven_salecount(request):
+    user=request.user.id
     company = company_details.objects.get(user=request.user)
-    item=AddItem.objects.all()
-    inv=invoice_item.objects.all()
-    rinv=recur_itemtable.objects.all()
-    estim=EstimateItems.objects.all()
-    sorder=sales_item.objects.all()
-    credit=Credititem.objects.all()
+    item=AddItem.objects.filter(user=user)
+    inv=invoice_item.objects.filter(inv__user=user)
+    rinv=recur_itemtable.objects.filter(ri__user=user)
+    estim=EstimateItems.objects.filter(estimate__user=user)
+    sorder=sales_item.objects.filter(sale__customer__user=user)
+    credit=Credititem.objects.filter(creditnote__user=user)
     totalsale=0
     totalsale1=0
     totalsale2=0
@@ -16751,12 +16753,13 @@ def inven_salecount(request):
     }
     return render(request,'inventorysalecount.html', context)
 def productsale_filter(request):
+    user=request.user.id
     company = company_details.objects.get(user=request.user)
-    inv = sales_item.objects.all()
-    rinv =recur_itemtable.objects.all()
-    estim=EstimateItems.objects.all()
-    sorder=sales_item.objects.all()
-    credit=Credititem.objects.all()
+    inv = invoice_item.objects.filter(inv__user=user)
+    rinv =recur_itemtable.objects.filter(ri__user=user)
+    estim=EstimateItems.objects.filter(estimate__user=user)
+    sorder=sales_item.objects.filter(sale__customer__user=user)
+    credit=Credititem.objects.filter(creditnote__user=user)
     totalsale=0
     totalsale1=0
     totalsale2=0
@@ -16872,8 +16875,9 @@ def productsale_filter(request):
     
 
 def product_graphview(request):
+    user=request.user.id
     company = company_details.objects.get(user=request.user)
-    item=AddItem.objects.all()
+    item=AddItem.objects.filter(user=user)
    
 
     context = {
@@ -16882,9 +16886,9 @@ def product_graphview(request):
     return render(request,"product_graphview.html",context)
     
 def product_graphview_btn(request, pk):
-    
+    user=request.user.id
     company = company_details.objects.get(user=request.user)
-    item=AddItem.objects.all()
+    item=AddItem.objects.filter(user=user)
     rec_total =recur_itemtable.objects.filter( items=pk)
 
     rec_totals = []
@@ -16927,6 +16931,7 @@ def product_graphview_btn(request, pk):
 
 
 def productname_filter(request,product):
+    
     company=company_details.objects.get(user=request.user)
     user_id=request.user
     inv=invoice_item.objects.filter(product=product)
