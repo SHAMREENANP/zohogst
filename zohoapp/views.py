@@ -10859,7 +10859,7 @@ def GSTR_3Bpage(request):
 def GSTR_1page(request):
     company = company_details.objects.get(user=request.user)
     data=invoice.objects.all()
-    invoices=recurring_invoice.objects.all()
+    invoices=Recurring_invoice.objects.all()
     reinv=RetainerInvoice.objects.all()
     context={
         'invoices':invoices,
@@ -16624,59 +16624,41 @@ def inven_details(request):
     }
     return render(request,'inventorydetails.html', context)
 def productsalereport(request):
-    user=request.user.id
+  
+    user = request.user.id
     company = company_details.objects.get(user=request.user)
-    item=AddItem.objects.filter(user=user)
+    items = AddItem.objects.filter(user=user)
     inv = invoice_item.objects.filter(inv__user=user)
     rinv = Recurring_invoice.objects.filter(user=user)
-    pdebit_list = [] 
-    for i in rinv:
-        pdebit = recur_itemtable.objects.filter(ri=i)
-        
-        # Append each pdebit object to the pdebit_list
+    pdebit_list = []
+
+    product_data = {}  # Dictionary to store product-wise data
+
+    for i in items:
+        product_data[i.Name] = {
+            'quantity': 0,
+            'subtotal': 0,
+            'grandtotal': 0,
+        }
+    
+    for iv in inv:
+        product_data[iv.product]['quantity'] += iv.quantity
+        product_data[iv.product]['subtotal'] += iv.inv.subtotal
+        product_data[iv.product]['grandtotal'] += iv.inv.grandtotal
+
+    print(product_data)
+    for ir in rinv:
+        pdebit = recur_itemtable.objects.filter(ri=ir)
+
         for pd in pdebit:
             pdebit_list.append(pd)
-    
-    quantity=0
-    subtotal=0
-    grandtotal=0
-   
-    for i in item:
-        print(i.Name)
-        try:
-            stoi=invoice_item.objects.filter(product=i.Name,inv__user=user)
-            for iv in stoi:
-                quantity+=iv.quantity
-                subtotal+=iv.inv.subtotal
-                grandtotal+=iv.inv.grandtotal
-                
-            i.quantity=quantity
-            i.subtotal=subtotal
-            i.grandtotal=grandtotal
-        except invoice_item.DoesNotExist:  
-           i.quantity=0
-           i.subtotal=0 
-           i.grandtotal=0 
+            product_data[pd.iname]['quantity'] += pd.quantity
+            product_data[pd.iname]['subtotal'] += pd.ri.sub_total
+            product_data[pd.iname]['grandtotal'] += pd.ri.total
+    print(product_data)
+    X=product_data[pd.iname]['quantity'] 
   
-        try:
-            stoa=recur_itemtable.objects.filter(iname=i.Name,ri__user=user)
-            for ir in stoa:
-                quantity+=ir.quantity
-                subtotal+=ir.ri.sub_total
-                grandtotal+=ir.ri.total
-                
-            i.quantity=quantity
-            i.subtotal=subtotal
-            i.grandtotal=grandtotal
-            
-        except recur_itemtable.DoesNotExist:  
-            i.quantity=0
-            i.subtotal=0 
-            i.grandtotal=0
-    
-
-    context = {'company':company,"inv":inv,"rinv":rinv,'item':item,'pdebit':pdebit_list
-        }
+    context = {'company': company,'x':x, "inv": inv, "rinv": rinv, 'item': items, 'pdebit': pdebit_list, 'product_data': product_data}
     return render(request, 'productsaletwo.html', context)
 def inven_salecount(request):
     user=request.user.id
