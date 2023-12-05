@@ -10859,7 +10859,7 @@ def GSTR_3Bpage(request):
 def GSTR_1page(request):
     company = company_details.objects.get(user=request.user)
     data=invoice.objects.all()
-    invoices=recurring_invoice.objects.all()
+    invoices=Recurring_invoice.objects.all()
     reinv=RetainerInvoice.objects.all()
     context={
         'invoices':invoices,
@@ -16624,24 +16624,43 @@ def inven_details(request):
     }
     return render(request,'inventorydetails.html', context)
 def productsalereport(request):
-    user=request.user.id
+  
+    user = request.user.id
     company = company_details.objects.get(user=request.user)
-    item=AddItem.objects.filter(user=user)
+    items = AddItem.objects.filter(user=user)
     inv = invoice_item.objects.filter(inv__user=user)
     rinv = Recurring_invoice.objects.filter(user=user)
-    pdebit_list = [] 
-    for i in rinv:
-        pdebit = recur_itemtable.objects.filter(ri=i)
-        
-        # Append each pdebit object to the pdebit_list
+    pdebit_list = []
+
+    product_data = {}  # Dictionary to store product-wise data
+
+    for i in items:
+        product_data[i.Name] = {
+            'quantity': 0,
+            'subtotal': 0,
+            'grandtotal': 0,
+            'date':0-0-0,
+        }
+    
+    for iv in inv:
+        product_data[iv.product]['quantity'] += iv.quantity
+        product_data[iv.product]['subtotal'] += iv.inv.subtotal
+        product_data[iv.product]['grandtotal'] += iv.inv.grandtotal
+        product_data[iv.product]['date'] = iv.inv.inv_date
+  
+    for ir in rinv:
+        pdebit = recur_itemtable.objects.filter(ri=ir)
+
         for pd in pdebit:
             pdebit_list.append(pd)
+            product_data[pd.iname]['quantity'] += pd.quantity
+            product_data[pd.iname]['subtotal'] += pd.ri.sub_total
+            product_data[pd.iname]['grandtotal'] += pd.ri.total
+            product_data[pd.iname]['date'] = pd.ri.start
+    print(product_data)
     
-   
-    
-
-    context = {'company':company,"inv":inv,"rinv":rinv,'item':item,'pdebit':pdebit_list
-        }
+  
+    context = {'company': company, "inv": inv, "rinv": rinv, 'item': items, 'pdebit': pdebit_list, 'product_data': product_data}
     return render(request, 'productsaletwo.html', context)
 def inven_salecount(request):
     user=request.user.id
@@ -16931,13 +16950,13 @@ def product_graphview_btn(request, pk):
 
 
 def productname_filter(request,product):
-    
+    user=request.user.id
     company=company_details.objects.get(user=request.user)
-    user_id=request.user
+    
     inv=invoice_item.objects.filter(product=product)
     n=AddItem.objects.get(Name=product)
 
-    itemn=AddItem.objects.all()
+    item=AddItem.objects.filter(user=user)
     name=product
     print(name)
     totalsale=0
@@ -16954,6 +16973,7 @@ def productname_filter(request,product):
         rinv =recur_itemtable.objects.filter(iname=product,ri__start__range=[start,end])
         products=AddItem.objects.all()
         n=AddItem.objects.get(Name=product)
+        
     for i in rinv:
         if i.ri.total != 'NULL' or i.ri.total != " ":
             totalsale1 += float(i.ri.total)
@@ -16966,20 +16986,25 @@ def productname_filter(request,product):
             totalsale += float(i.inv.grandtotal)
         if i.inv.subtotal != 'NULL' or i.inv.subtotal!= " ":
             subtotalsale += float(i.inv.subtotal)
-        
-    
     sale=totalsale
     sale1=totalsale1
-    total=totalsale+totalsale1
+    
     subsale=subtotalsale
     subsale1=subtotalsale1
-    subtotal=subtotalsale+subtotalsale1
+    
+    if (inv==rinv):
+
+        sale=totalsale+totalsale1
+        subsale1=totalsale+totalsale1
+        subsale=subtotalsale+subtotalsale1
+        subsale1=subtotalsale+subtotalsale1
+
     sale='{:.2f}'.format(sale)
     sale1='{:.2f}'.format(sale1)
-    total='{:.2f}'.format(total)
+   
     subsale='{:.2f}'.format(subsale)
     subsale1='{:.2f}'.format(subsale1)
-    subtotal='{:.2f}'.format(subtotal)
+    
     context={
 
        "allproduct":inv,
@@ -16990,70 +17015,83 @@ def productname_filter(request,product):
        "product":products,
 
        'company':  company, 
-        'total':total,
-        'subtotal':subtotal,
+       
+     
         'sale':sale,
         'sale1':sale1,
     
         'subsale':subsale,
         'subsale1':subsale1,
-        
+        'item':item,
         }
-    return render(request, 'productsaletwo.html', context)   
-def sales_by_item(request):
-    cmp1 = company_details.objects.get(user=request.user)
-   
-      
-    cust = AddItem.objects.all()
-    
-    inv=invoice_item.objects.all()
-   
+    return render(request, 'PRODUCTTHREE.html', context)   
+def sales_by_item(request):  
+    user=request.user.id
+    company = company_details.objects.get(user=request.user)
+    item=AddItem.objects.filter(user=user)
+    inv=invoice_item.objects.filter(inv__user=user)
+    rinv=recur_itemtable.objects.filter(ri__user=user)
+    quantity=0
+    subtotal=0
+    grandtotal=0
+    for i in item:
+        
+        print(i.Name)
+        try:
+            stoi=invoice_item.objects.filter(product=i.Name,inv__user=user)
+            stoa=recur_itemtable.objects.filter(iname=i.Name,ri__user=user)
+            for iv in stoi:
+                if (stoa==stoi):
+                
+                    quantity+=iv.quantity
+                    subtotal+=iv.inv.subtotal
+                    grandtotal+=iv.inv.grandtotal
+                else:
+                 
+                    quantity=iv.quantity
+                    subtotal=iv.inv.subtotal
+                    grandtotal=iv.inv.grandtotal 
+            i.quantity=quantity
+            i.subtotal=subtotal
+            i.grandtotal=grandtotal
+        except invoice_item.DoesNotExist:  
+           i.quantity=0
+           i.subtotal=0 
+           i.grandtotal=0 
   
-    recinv= recur_itemtable.objects.all()
+        try:
+            stoi=invoice_item.objects.filter(product=i.Name,inv__user=user)
+            stoa=recur_itemtable.objects.filter(iname=i.Name,ri__user=user)
+            
+            for ir in stoa:
+                if (stoa==stoi):
+                   quantity+=ir.quantity
+                   subtotal+=ir.ri.sub_total
+                   grandtotal+=ir.ri.total
+                else:
+                
+                   quantity=ir.quantity
+                   subtotal=ir.ri.sub_total
+                   grandtotal=ir.ri.total
 
- 
+            i.quantity=quantity
+            i.subtotal=subtotal
+            i.grandtotal=grandtotal
+            
+        except recur_itemtable.DoesNotExist:  
+            i.quantity=0
+            i.subtotal=0 
+            i.grandtotal=0
 
-    totalsale=0
-    totalpurchase=0
-    totalexp=0
-    totalpay=0
-    totalpayr=0
-    salesreturn=0
-    purchasereturn=0
-
-    amount=0
-
- 
+    context={
+        'user':user,
+       'company':company,
+       
+        'item':item,
+        'rinv':rinv,
+        'inv':inv,
         
-
-  
-    for i in recinv:
-        if i.ri.total != 'NULL' or i.ri.total != " ":
-            totalsale += float(i.ri.total)
-   
-    
-    for i in inv:
-        if i.inv.grandtotal != 'NULL' or i.inv.grandtotal != " ":
-            totalsale += float(i.inv.grandtotal)
         
-        
-   
-    print(totalpurchase)
-    print(purchasereturn)
-    
-    sale=totalsale-salesreturn
-    purchase = totalpurchase-purchasereturn
-    
-    sale='{:.2f}'.format(sale)
-    purchase='{:.2f}'.format(purchase)
-    totalexp='{:.2f}'.format(totalexp)
-    totalpay='{:.2f}'.format(totalpay)
-    totalpayr='{:.2f}'.format(totalpayr)
-
-
-    context = {
-        'cust': cust,  'cmp1': cmp1,'inv':inv,'recinv':recinv,
-        'sale':sale,'purchase':purchase,
-        'exp':totalexp,'totalpay':totalpay,'totalpayr':totalpayr
     }
-    return render(request, 'sales_by_item.html',context)
+    return render(request,'PRODUCTTHREE.html', context)
+     
