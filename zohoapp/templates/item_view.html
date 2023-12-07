@@ -1,102 +1,250 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block content %}
+  <!-- .....replace by athul.... -->
+  {% extends 'base.html' %}
+  {% load static %}
+  {% block content %}
 
-<section > 
-  <div class="row " style="margin-top: -3rem; margin-left:1rem;" >
-    <div class="col-md-12 form-inline ">
-      <div class="row">
-        <div class="col-md-9"><a class="text-white" style="font-size: 2rem;">All Items</a></div>
-        <input type="text"  id="searchInput" class="form-control" placeholder="Search Items..." style="margin-top: 25px; width: 30%;">
-         
-        
-        <div class="col-md-9 form-inline" style="margin-left: 40rem;margin-top:-1.9rem;display:inline-flex;">
-          <div class="btn-group">
-            <select id="sortingOption" class="btn btn-secondary "  style="width:6rem;height: 2rem;">
-              <option >Filter</option>
-              <option value="name">Name</option>
-              <option value="stock">Stock on Inventory</option>
-            </select>
-          </div>
-          <button class="btn btn-secondary" id="filterButton" style="height:2rem;display:inline"></button>
-        </div>
-        <div class="col-md-9 form-inline"  style="margin-top: -1.8rem; margin-left:49rem;"><a style="color: #000;" class="btn btn-secondary " href="{% url 'additem' %}"><i class="fa-solid fa-plus "></i>New Item</a>
-          <a style="color: #ccc;"href="#3"> </a>
-        </div> 
-      </div>
-    </div>
-  </div>
-              
-              
-                {% comment %} <form action="  " method="post">
-                  {% csrf_token %} {% endcomment %}
-                  {% comment %} <div class="input-group">
-                    <div class="form-outline">
-                      <input type="text" id="searchInput" name='search_query' placeholder="Search..." >
-                      <label class="form-label"  placeholder="Search"></label>
-                    </div> {% endcomment %}
-                    {% comment %} <button id="dataTable" type="button" class="btn btn-primary">
-                      <i class=" fas fa-search"></i>Search
-                    </button> {% endcomment %}
-                  {% comment %} </div> {% endcomment %}
-                {% comment %} </form> </a> {% endcomment %}
-        
+  <style>
+    .tr{
+        cursor: pointer;
+    }
+
+    @media print{
+    body{
+        visibility: hidden;
+    }
+
+    #printtable{
+        visibility: visible;
+        width: auto;
+        height: auto;
+        margin-top: -600px;
+        margin-left: -100px;
+    }
+}
+h2{
+    font-size: x-large;
+    font-family: 'Segoe UI', Tahoma,;
+    color:#dfe4e9;
+  }
+  .card{
+        background: none;
+    }
+    tbody tr td{
+        border: none;
+        border-top: none;
+        border-style: none;
+        color:azure;
+        justify-content: center;
+    }
+ 
+
+tr:hover {
+  background-color : rgb(94, 94, 101);
+  color: aliceblue;
+cursor: pointer
+}
+    .btn {
+  background-color: white;
+  border: none;
+  color: green;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: white;
+}
+
+</style>
+<style>
+    .bar {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .bar .left {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .bar .left input {
+        height: 5vh;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    @media print {
+        .print-contents table tbody {
+            color: black;
+        }
+
+        #pdf-card {
+            background-color: white;
+        }
+    }
+</style>
+  
+ 
+  <section class="container" sryle="position:fixed;z-index:99;" > 
+    <div class="row mt-3 " style="margin-top: -3rem; margin-left:1rem;" >
+      <div class="col-md-10 form-inline ">
+        <div class="row">
+          <center><div class="col-md-9"><a class="text-white " style="font-size: 2rem;"><b>ALL  ITEMS</b></a></div></center>
+          <div class="bar">
           
-  <table id="example"  class="table  text-white" style="overflow-y: scroll ;width:100%;  margin-top: 40px;">
-    <thead >
-      <tr>
-        <th id="nameHeader">Name</th>
-        <th>Description</th>
-        <th>Sales Rate</th>
-        <th>Purchase Rate</th>
-        <th>HSN/SAC</th> 
-        <th id="stockHeader">Stock on Inventory</th>
-        <th>Usage Unit</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for v in view %}
+              <div class=" left">
+                  <div class="px-2">
+                     
+                  </div>
 
-      <tr>
-      
+        
+            
+              </div>
+            <div class="right">
 
-        <td onclick="location.href ='{% url 'detail' v.id %}' " > {{v.Name}}</td>
-        <td>{{v.s_desc}}</td>
-        <td>{{v.s_price}}</td>
-        <td>{{v.p_price}}
-        <td>{{v.hsn}}</td> 
-    
-         <td>{{v.stock}}</td> 
-      
-        <td>{{v.unit.unit}}</td>
-
-      
-      </tr>
-      {% endfor %}
- 
-    </tbody>
-  </table>
- 
-
-
+                <button class="btn btn_pdf btn-outline-info" style="background: white; color: rgb(218, 164, 48);outline-color:rgb(218, 164, 48) ;"><i class="fa fa-file-pdf"></i> </button>
+                <button class="btn btn_print btn-outline-info" id="printButton" onclick="display()"  style="background: white; color: rgb(218, 164, 48);"><i class="fa fa-print"></i></button>
+                <button class=" btn btn-outline-info" id="export-button" onclick="exportAsExcel()"  style="background: white; color: rgb(218, 164, 48);"> <i class="fa fa-file-excel"></i> </button>
+                <button class=" btn btn-outline-info"  style="background: white; color: rgb(218, 164, 48);"> <a  href="{% url 'report_inventory_view' %}" class="fa fa-close" style="color:rgb(218, 164, 48);"></a> </button>
+            </div>
+        </div>
+        <br>  <br> <br>  <br>
+          <hr>
+          <input type="text"  id="searchInput" class="form-control bg-dark" placeholder="Search Items..." style="margin-top: 25px; width: 30%;border: 2px solid rgb(214, 141, 5);">
+          
+          <div class="btn-group" role="group"  style="margin-left: 1rem;margin-top:1.7rem;display:inline-flex;width:4rem;height:2rem;">
+            <button id="btnGroupDrop1" type="button" class="btn text-white btn-outline-light dropdown-toggle" style="background-color: rgb(214, 141, 5);border-radius: 5px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Sort
+            </button>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+              <a class="dropdown-item" href="#"  data-sort="all">All</a>
+              <a class="dropdown-item" href="#"  data-sort="name">Name</a>
+              <a class="dropdown-item" href="#"  data-sort="HSN">HSN/SAC</a>
+              <a class="dropdown-item" href="#"  data-sort="usage">Usage Unit</a>
+              {% comment %} <a class="dropdown-item" href="#" id="sortByName">Name</a>
+              <a class="dropdown-item" href="#" id="sortByHSN">HSN</a>
+              <a class="dropdown-item" href="#" id="sortByUsageUnit">Usage Unit</a> {% endcomment %}
+            </div>
+            
+          </div>
+          <div class="btn-group" role="group"  style="margin-left: 2rem;margin-top:1.7rem;display:inline-flex;width:.5rem;height:2rem;">
+            <button id="btnGroupDrop1" type="button" class="btn btn-outline-light dropdown-toggle" style="background-color: rgb(214, 141, 5);border-radius: 5px;color: white;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Filter
+            </button>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+              <a class="dropdown-item" href="#" id="filterAllButton">All</a>
+              <a class="dropdown-item" href="#" id="filterActiveButton">Active</a>
+              <a class="dropdown-item" href="#" id="filterInactiveButton">Inactive</a>
+            </div>
+            
+          </div>
+          <div class="col-md-9 form-inline"  style="margin-top: -2rem; margin-left:54rem;height:1rem;"><a style="background-color: rgb(214, 141, 5);border-radius: 5px;color: white;" class="btn btn-outline-light " href="{% url 'additem' %}"><i class="fa-solid fa-plus "></i>New Item</a>
+            <a style="color: #ccc;"href="#3"> </a>
+          </div> 
+        </div>
+      </div>
+    </div>  
+    <div  id="pdf-card">
+    <div id="tableContainer" style="max-height: 500px;">
+      <table id="dataTable" class="table text-white mt-3" style="width: 100%; margin-top: 40px;">
+        <thead>
+          <tr>
+            <th class="col" id="nameHeader" style="color: rgb(214, 141, 5);">Name</th>
+            <th class="col" style="color: rgb(214, 141, 5);">Description</th>
+            <th class="col" style="color: rgb(214, 141, 5);">Sales Rate</th>
+            <th class="col" style="color: rgb(214, 141, 5);">Purchase Rate</th>
+            <th class="col" style="color: rgb(214, 141, 5);">HSN/SAC</th>
+            <th class="col" id="stockHeader" style="color: rgb(214, 141, 5);">Stock on Inventory</th>
+            <th class="col" style="color: rgb(214, 141, 5);">Usage Unit</th>
+            <th class="col" style="color: rgb(214, 141, 5);">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in view %}
+          <tr class="{% if v.satus == 'active' or v.satus == 'Active' %}active{% elif v.satus == 'inactive' or v.satus == 'Inactive' %}inactive{% endif %}">
+            <td class="item-name-cell" onclick="location.href ='{% url "detail" v.id %}'">{{ v.Name }}</td>
+            <td>{{ v.s_desc }}</td>
+            <td>{{ v.s_price }}</td>
+            <td>{{ v.p_price }}</td>
+            <td>{{ v.hsn }}</td>
+            <td>{{ v.stock }}</td>
+            <td>{{ v.unit.unit }}</td>
+            <td>{{ v.satus }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
 
 
   <script>
-    var searchInput = document.getElementById('searchInput');
-    var tableRows = document.querySelectorAll('#example tbody tr');
+    $(document).ready(function() {
+      var originalTable = $('#dataTable').clone(); // Clone the original table on page load
   
-    // Add event listener to the search input
-    searchInput.addEventListener('input', function () {
-      var searchValue = searchInput.value.toLowerCase();
+      // Function to sort items by name
+      function sortByName() {
+        var rows = $('#dataTable tbody tr').get();
+        rows.sort(function(a, b) {
+          var keyA = $(a).children('td').eq(0).text().toUpperCase();
+          var keyB = $(b).children('td').eq(0).text().toUpperCase();
+          if (keyA < keyB) return -1;
+          if (keyA > keyB) return 1;
+          return 0;
+        });
+        $.each(rows, function(index, row) {
+          $('#dataTable').children('tbody').append(row);
+        });
+      }
   
-      // Loop through table rows and show/hide based on search value
-      tableRows.forEach(function (row) {
-        var cellValue = row.querySelector('td:nth-child(1)').textContent.toLowerCase(); // Modify this selector to target the correct column
+      // Function to sort items by HSN/SAC
+      function sortByHSN() {
+        var rows = $('#dataTable tbody tr').get();
+        rows.sort(function(a, b) {
+          var keyA = $(a).children('td').eq(4).text();
+          var keyB = $(b).children('td').eq(4).text();
+          return keyA.localeCompare(keyB);
+        });
+        $.each(rows, function(index, row) {
+          $('#dataTable').children('tbody').append(row);
+        });
+      }
+
+      // Function to sort items by Usage Unit
+      function sortByUsageUnit() {
+        var rows = $('#dataTable tbody tr').get();
+        rows.sort(function(a, b) {
+          var keyA = $(a).children('td').eq(6).text(); // Adjust the column index for Usage Unit
+          var keyB = $(b).children('td').eq(6).text(); // Adjust the column index for Usage Unit
+          return keyA.localeCompare(keyB);
+        });
+        $.each(rows, function(index, row) {
+          $('#dataTable').children('tbody').append(row);
+        });
+      }
+
+      // Function to restore the table to its original state
+      function restoreOriginalTable() {
+        $('#dataTable').replaceWith(originalTable.clone()); // Replace the current table with the original table clone
+      }
+
   
-        if (cellValue.includes(searchValue)) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
+      // Handle sorting based on data-sort attribute
+      $('[data-sort]').on('click', function() {
+        var sortType = $(this).data('sort');
+        if (sortType === 'name') {
+          sortByName();
+        } else if (sortType === 'HSN') {
+          sortByHSN();
+        } else if (sortType === 'usage') {
+          sortByUsageUnit();
+        } else if (sortType === 'all') {
+          restoreOriginalTable();
         }
       });
     });
@@ -104,56 +252,182 @@
   
 
 
-
-<script>
-  window.addEventListener('DOMContentLoaded', (event) => {
-    const filterButton = document.getElementById('filterButton');
-
-    filterButton.addEventListener('click', () => {
-      const sortingOption = document.getElementById('sortingOption').value;
-      sortTable(sortingOption);
-    });
-
-    function sortTable(sortingOption) {
-      const table = document.getElementById('example');
-      const tbody = table.tBodies[0];
-      const rows = Array.from(tbody.rows);
-
-      if (sortingOption === 'name') {
-        rows.sort((a, b) => {
-          const aValue = a.cells[0].innerText.toLowerCase();
-          const bValue = b.cells[0].innerText.toLowerCase();
-          return aValue.localeCompare(bValue);
-        });
-      } else if (sortingOption === 'stock') {
-        rows.sort((a, b) => {
-          const aValue = parseFloat(a.cells[5].innerText);
-          const bValue = parseFloat(b.cells[5].innerText);
-          return aValue - bValue;
-        });
+  
+  <script>
+    // Function to filter items based on status
+    function filterItems(status) {
+      
+      if (status === 'active' || status === 'Active') {
+        $('tbody tr').hide();
+        $('tbody tr.active, tbody tr.Active').show();
+      } else if (status === 'inactive' || status === 'Inactive') {
+        $('tbody tr').hide();
+        $('tbody tr.inactive, tbody tr.Inactive').show();
+      } else {
+        $('tbody tr').show(); // Show all items
       }
-
-      // Remove the current sorted rows
-      rows.forEach((row) => {
-        tbody.removeChild(row);
-      });
-
-      // Append the sorted rows back to the table body
-      rows.forEach((row) => {
-        tbody.appendChild(row);
-      });
     }
-  });
-</script>
+  
+    // Attach the filter function to the filter buttons
+    $('#filterActiveButton').on('click', function() {
+      filterItems('active');
+    });
+  
+    $('#filterInactiveButton').on('click', function() {
+      filterItems('inactive');
+    });
+  
+    $('#filterAllButton').on('click', function() {
+      filterItems('all');
+    });
+  </script>
+  
 
 
+  
+  
+  
+  <script>
+    // Function to handle the search
+    function searchTable() {
+      let input, filter, table, tr, td, i, j, txtValue;
+      input = document.getElementById("searchInput");
+      filter = input.value.toLowerCase();
+      table = document.getElementById("dataTable");
+      tr = table.getElementsByTagName("tr");
 
-</section>
+      // Loop through all table rows (excluding the first row, which contains the column headers)
+      for (i = 1; i < tr.length; i++) {
+        let rowVisible = false;
+        td = tr[i].getElementsByTagName("td");
 
+        // Loop through all table cells (columns) in each row
+        for (j = 0; j < td.length; j++) {
+          if (td[j]) {
+            txtValue = td[j].textContent || td[j].innerText;
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+              rowVisible = true;
+              break;
+            }
+          }
+        }
+  
+        // Show/hide the row based on the search results
+        tr[i].style.display = rowVisible ? "" : "none";
+      }
+    }
+  
+    // Attach the search function to the input field's "input" event
+    document.getElementById("searchInput").addEventListener("input", searchTable);
+  </script>
 
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> 
 
 
 {% endblock %}
+
+
+
+
+
+
+  
+
+
+
+  
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var originalTable = $('#dataTable').clone(); // Clone the original table on page load
+
+    // Function to sort items by name
+    function sortByName() {
+      var rows = $('#dataTable tbody tr').get();
+      rows.sort(function(a, b) {
+        var keyA = $(a).children('td').eq(0).text().toUpperCase();
+        var keyB = $(b).children('td').eq(0).text().toUpperCase();
+        if (keyA < keyB) return -1;
+        if (keyA > keyB) return 1;
+        return 0;
+      });
+      $.each(rows, function(index, row) {
+        $('#dataTable').children('tbody').append(row);
+      });
+    }
+
+    // Function to sort items by stock on inventory
+    function sortByStock() {
+      var rows = $('#dataTable tbody tr').get();
+      rows.sort(function(a, b) {
+        var keyA = parseInt($(a).children('td').eq(5).text());
+        var keyB = parseInt($(b).children('td').eq(5).text());
+        return keyA - keyB;
+      });
+      $.each(rows, function(index, row) {
+        $('#dataTable').children('tbody').append(row);
+      });
+    }
+
+    // Event handler for the "Filter" dropdown
+    $('.dropdown-item').on('click', function() {
+      var sortType = $(this).data('sort');
+      if (sortType === 'name') {
+        sortByName();
+      } else if (sortType === 'stock') {
+        sortByStock();
+      } else if (sortType === 'all') {
+        $('#dataTable').replaceWith(originalTable.clone());
+      }
+    });
+  });
+
+</script>
+<script type="text/javascript">
+  function exportAsExcel() {
+      const table = document.getElementById('myTable'); // Replace 'myTable' with your table's ID
+      const wb = XLSX.utils.table_to_book(table);
+
+      XLSX.writeFile(wb, 'product sale report.xlsx');
+  }
+</script>
+<script>
+  function display() {
+      var printContents = document.getElementById("pdf-card").innerHTML;
+      var div2Contents = document.getElementById('div2').innerHTML;
+      var originalContents = document.body.innerHTML;
+      document.body.innerHTML = div2Contents + printContents;
+      window.print();
+      document.body.innerHTML = originalContents;
+      location.reload();
+
+  }
+
+
+  $(document).ready(function ($) {
+      $(document).on('click', '.btn_pdf', function (event) {
+          console.log('print1');
+          event.preventDefault();
+          var name = document.getElementById("headline").innerHTML;
+          var div2 = document.getElementById("div2");
+          var element = document.createElement('div');
+          element.appendChild(div2.cloneNode(true));
+          element.appendChild(document.getElementById('pdf-card').cloneNode(true));
+          element.style.color = 'white';
+          element.style.backgroundColor = '#243e54';
+          var opt = {
+              margin: 1,
+              filename: name + '.pdf',
+              image: { type: 'png', quality: 1.0 },
+              html2canvas: { scale: 3, useCORS: true },
+              jsPDF: { unit: 'in', format: 'a3', orientation: 'portrait', backgroundColor: '#243e54' }
+          };
+          html2pdf().set(opt).from(element).save();
+      });
+  });
+
+
+
+</script>
