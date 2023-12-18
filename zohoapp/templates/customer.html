@@ -12,7 +12,12 @@
       overflow: scroll;
     }
 </style>
-
+{% for message in messages %}
+<div class="alert alert-success">
+    <a class="close" href="#" data-dismiss="alert">x</a>
+    {{ message }}
+</div>
+{% endfor %}
 <!-- <section > -->
     <!-- <div class="fixed-top" style="top: 7rem; margin-left: 18rem;" > -->
         <div class="modal fade" id="newpayment">
@@ -132,7 +137,7 @@
                     <label >Primary Contact</label>
                 </div>
                 <div class="col-sm-12 col-md-1 col-lg-1">
-                    <select id="sa"  name="txtsalu" class="form-control bg-light text-dark  " >
+                    <select id="sa" id="surname"  name="txtsalu" class="form-control bg-light text-dark  " >
                       
                      
                         <option value="Mr" selected>Mr</option>
@@ -146,11 +151,11 @@
                        </select> 
                 </div>
                 <div class="col-sm-12 col-md-2 col-lg-3" >
-                    <input  type="text" class="form-control bg-light text-dark  " id="fName" name="fName"  placeholder="first name" required >
+                    <input  type="text" class="form-control bg-light text-dark  " id="fName" name="fName" id="firstName" placeholder="first name" onclick="generateFullNames()" required >
 
                 </div>
                 <div class="col-sm-12 col-md-2 col-lg-2" >
-                    <input type="text" class="form-control bg-light text-dark " id="lName"  name="lName" placeholder="last name"  oninput="generateFullName()" required >
+                    <input type="text" class="form-control bg-light text-dark " id="lName"  name="lName"id="secondName" placeholder="last name"  oninput="generateFullName()" required >
 
                 </div>
             </div>
@@ -161,9 +166,29 @@
                     <input type="text" class="form-control bg-light text-dark "  id="txtFullName" name="txtFullName" >
  
       
-                            
+                   
+        
                           
                  </div>
+                 
+                 <select class="form-gr form-select text-dark bg-light" id="txtFullName" name="bal" style="background-color: #888; width: 100px;">
+                    <option value="txtFullName"  id="txtFullName"></option>
+                    <option value="debit"></option>
+                   
+                  </select>
+                  <div class="col-sm-12 col-md-6 col-lg-6">
+                    <label for="orderSelect">Select Order:</label>
+                    
+                    <select id="orderSelect" onchange="generateAndDisplayFullName()" class="form-control bg-light text-dark ">
+                        <option value="pattern1">First Name, Second Name, Surname</option>
+                        <option value="pattern2">First Name, Surname, Second Name</option>
+                        <option value="pattern3">Second Name, First Name, Surname</option>
+                        <option value="pattern4">Second Name, Surname, First Name</option>
+                        <option value="pattern5">Surname, First Name, Second Name</option>
+                        <option value="pattern6">Surname, Second Name, First Name</option>
+                    </select>
+                    <p id="fullNameResult"></p>
+                   </div>
             
                <div class="form-group row mt-4">
                    <div class="col-sm-12 col-md-3 col-lg-3 col-form-label"><label>Company Name</label></div>
@@ -353,12 +378,12 @@
                     <label class="col-sm-12 col-md-3 col-lg-3 col-form-label" style="color:rgb(214, 75, 75) ;">Tax Preference*</label>
                     
                     <div class=" col-sm-12 col-md-3 col-lg-3">
-                        <input type="checkbox" id="Taxable" name="tax1" value="Taxable">&nbsp;
-                        <label for="vehicle1" class="pt-1">Taxable</label>
-                        &nbsp;&nbsp;&nbsp;
-                        <input type="checkbox" id="Tax Exempt" name="tax1" value="Tax Exempt">&nbsp;
-                        <label for="vehicle2" class="pt-1"> Tax Exempt</label>
-                  
+                       
+                        <div class="col-sm-10"><input type="radio"id="Taxable" name="tax1" value="Taxable" class="custom-radio"
+                            >&nbsp;&nbsp;<label for="vehicle1" class="pt-1">Taxable</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                          <input type="radio"  id="Tax Exempt" name="tax1" value="Tax Exempt" class="custom-radio" >&nbsp;&nbsp;<label for="vehicle2"class="pt-1"> Tax Exempt
+                           </label>
+                        </div>
                     </div>
  
  
@@ -400,11 +425,25 @@
                    
                   </select>
                 </div>
-                <input type="number" class="form-control text-dark bg-light" id="cn" value="{{cu.OpeningBalance}}" name="obal">
+                <input type="number" class="form-control text-dark bg-light" id="cn"  name="obal">
               </div>
             </div>
-                    
-                    
+            <div class="form-group row mt-4">
+                <label for="opn_bal" class="col-md-3 p-3">credit limit</label>
+        <div class="col-sm-12 col-md-3 col-lg-3 ">
+          <div class="input-group">
+            <div class="input-group-append">
+             
+            </div>
+            <input type="number" class="form-control text-dark bg-light"  id="creditInput" name="creditlimit" onmouseout="checkCreditValue()">
+
+            <label id="crd_label"></label>     
+
+        </div>
+        </div> 
+        <p id="resultMessage"></p>
+
+                       
 
                 </div>
                 
@@ -776,14 +815,6 @@
    document.getElementById('lName').value;
 
 }
-function generateFullNametwo()
-{
-   document.getElementById('txtFullNametwo').value = 
-   document.getElementById('sa').value + ' '+
-   document.getElementById('lName').value + ' ' + 
-   document.getElementById('fName').value;
-
-}
     function gstPan_function(){
         var x=document.getElementById('GSTT').value
         if(x=="Unregistered Business-not Registered under GST")
@@ -836,7 +867,6 @@ function generateFullNametwo()
 
         }
     }
-    
     $(document).ready(function () {
         $(".toggle1").click(function (e) {
           e.preventDefault();
@@ -1165,7 +1195,91 @@ $(document).on("click","#paySave",function(){
 
      
 </script>
+<script>
+    function generateFullNames() {
+        const firstName = document.getElementById('firstName').value;
+        const secondName = document.getElementById('secondName').value;
+        const surname = document.getElementById('surname').value;
+
+        const fullName = `${firstName} ${secondName} ${surname}`;
+        const fullName2 = `${surname}${firstName} ${secondName} `;
+        // Display the generated full name
+        document.getElementById('fullNameResult').innerText = `Generated Full Name: ${fullName}`;
+        document.getElementById('fullNameResult1').innerText = `Generated Full Name: ${fullName}`;
+    }
+</script>
 
 
+<script>
+    function generateAndDisplayFullName() {
+        const firstName = document.getElementById('fName').value;
+        const secondName = document.getElementById('lName').value;
+        const surName = document.getElementById('sa').value;
+        const orderSelect = document.getElementById('orderSelect');
+        const selectedOrder = orderSelect.options[orderSelect.selectedIndex].value;
+
+        let fullName;
+
+        switch (selectedOrder) {
+            case 'pattern1':
+                fullName = `${firstName} ${secondName} ${surName}`;
+                break;
+            case 'pattern2':
+                fullName = `${firstName} ${surName} ${secondName}`;
+                break;
+            case 'pattern3':
+                fullName = `${secondName} ${firstName} ${surName}`;
+                break;
+            case 'pattern4':
+                fullName = `${secondName} ${surName} ${firstName}`;
+                break;
+            case 'pattern5':
+                fullName = `${surName} ${firstName} ${secondName}`;
+                break;
+            case 'pattern6':
+                fullName = `${surName} ${secondName} ${firstName}`;
+                break;
+            default:
+                fullName = 'Invalid order';
+        }
+
+        document.getElementById('fullNameResult').textContent = `Generated Full Name: ${fullName}`;
+    }
+</script>
+<script>
+    // Function to check credit value
+    function checkCreditValue() {
+        // Get the credit value from the input field
+        var creditInput = document.getElementById("creditInput");
+        var creditValue = parseFloat(creditInput.value);
+
+        // Check if credit value exceeds 10000
+        if (creditValue > 10000) {
+            alert("Credit value exceeds 10000!");
+        } else {
+            alert("Credit value is within acceptable range.");
+        }
+    }
+</script>
+<script>
+    // Function to check credit value
+    function checkCreditValue() {
+        // Get the credit value from the input field
+        var x=document.getElementById("creditInput").value;
+        var crd_label=document.getElementById("crd_label")
+        var expr= parseFloat(creditInput.value);
+        if (expr> 10000) {
+            crd_label.style.color="red";
+            crd_label.innerHTML = "Credit value exceeds 10000!";
+         }
+        else{
+            crd_label.style.color="green";
+
+             crd_label.innerHTML = "Credit value is within acceptable range.";
+
+    }
+       
+    }
+</script>
 
 {% endblock %}
