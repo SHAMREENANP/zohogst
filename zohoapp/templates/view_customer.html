@@ -1,132 +1,379 @@
+
+
 {% extends 'base.html' %}
-{% load static %}
 {% block content %}
+{% load static %}
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link href='https://unpkg.com/css.gg@2.0.0/icons/css/trash.css' rel='stylesheet'>
+<script src="https://cdn.jsdelivr.net/bootstrap.datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+
+
+
 
 <style>
-    .arrow {
-      border: solid white;
-      border-width: 0 3px 3px 0;
-      display: inline-block;
-      padding: 3px;
+    .card{
+        background: none;
     }
-    
-    .down {
-      transform: rotate(45deg);
-      -webkit-transform: rotate(45deg);
-    } 
+    tbody tr td{
+        border: none;
+        border-top: none;
+        border-style: none;
+        color:azure;
+        justify-content: center;
+    }
     tr:hover{
-    cursor: pointer;
-    background-color: #474141;
-  }
-    </style>
-<section >
-  <div class="row fixed-top  " style="top: 7rem; margin-left: 18rem;" >
-   
-    <div class="col-md-10 " style=" position: fixed;">
-        <div class="row">
-            <div class="col-md-3"><a class="text-white" style="font-size: 2rem;">All Items</a></div>
-            <div class="col-md-6 form-inline" style="margin-left: 50rem;margin-top: -2rem;"> 
-                <a style="color: #ccc;" class="btn btn-success mr-2" href="{% url 'add_customers' %}">+New&nbsp;</a>
-          
-                  <a class="btn btn-success mr-2" style="color: #ccc;" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                   
-                    &nbsp;More&nbsp;
-                    
-                  </a>
-                <ul class="dropdown-menu" style="color: black;">
-                  <div class="dropdown-item"><a href="{% url 'view_customr_sname' %}" >Name</a></div>
-                    <div class="dropdown-item"><a href="{% url 'view_customr_scpname' %}" >Company Name</a></div>
-                    <div class="dropdown-item"><a href="">Receivables</a></div>
-                      <div class="dropdown-item"><a href="">Import Customer</a></div>
-                        <div class="dropdown-item"><a href="">Export Customer</a></div>
-                  
-                </ul>
-            </div>
-          </div>   
-    
-          <table class="table  text-white" id="myTable" style="margin: 15px;width:80%;">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>CompanyName</th>
-                <th>Email</th>
-                <th>Work Phone</th>
-                <th>Opening Balance</th>
-                <th>Receivables</th>
-                
-              </tr>
-            </thead>
-            <tbody>
-             
-             {% for v in r %}
-              <tr>
-     
-               
-                <td><a href="{% url 'view_one_customer' v.id %}" style="color: white;">{{v.customerName}}</a></td>
-                <td><a href="{% url 'view_one_customer' v.id %}" style="color: white;">{{v.companyName}}</a></td>
-                <td><a href="{% url 'view_one_customer' v.id %}" style="color: white;">{{v.customerEmail}}</a></td>
-                <td><a href="{% url 'view_one_customer' v.id  %}" style="color: white;" >{{v.customerWorkPhone}}</a></td>
-                <td><a href="{% url 'view_one_customer' v.id  %}" style="color: white;" >{{v.OpeningBalance}}</a></td>
-                
-                
-                <td class="menu-items dropdown"><a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" style="color: aliceblue;">
-                  
-                   <span class="menu-title" style="color:white"></span>
-                   
-                 </a>
-                 <ul class="dropdown-menu" style="background-color:rgb(74, 69, 69);color:white;">
-                   <div class="dropdown-item"><a href="{% url 'editcustomer' v.id %}">Edit</a></div>
-                   <div class="dropdown-item"><a href="{% url 'add_email_customer' %}">Email customer</a></div>
-                 </ul>
-               </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-      
-
-           
-           </div>
-
-    </div>
-  </div>
- 
-</section>
-
-<script>
-    function sortTable() {
-      var table, rows, switching, i, x, y, shouldSwitch;
-      table = document.getElementById("myTable");
-      switching = true;
-      while (switching) {
-     
-        switching = false;
-        rows = table.rows;
-       for (i = 1; i < (rows.length - 1); i++) {
-           shouldSwitch = false;
-          x = rows[i].getElementsByTagName("TD")[0];
-          y = rows[i + 1].getElementsByTagName("TD")[0];
-          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-            shouldSwitch = true;
-            break;
-          }
-        }
-        if (shouldSwitch) {
-          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-          switching = true;
-        }
-      }
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.1);
     }
-    </script>
-    
-     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  
    
-   
+    ul.image-bullets {
+        list-style-type: none;
+        padding-left: 30px;
+    }
 
+    ul.image-bullets li:before {
+        content: "";
+        background-image: url('static/images/bullet.png');
+        background-size: 15px 15px;
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        margin-right: 5px; 
+        margin-left: 26%;
+    }
+    .recurpoints ul li{
+        margin-bottom: 10px;
+    }
+
+    .flowchart {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px;
+}
+
+    .flowchart-item {
+        text-align: center;
+        padding: 10px;
+        background-color: lightblue;
+        border: 3px solid rgb(25, 91, 145);
+        border-radius: 5px;
+        width: 150px;
+        color: black;
+        font-size: 12px;
+    }
+    .flowchart-item i{
+        font-size: 15px;
+    }
+
+    .flowchart-connector {
+        flex-grow: 1;
+        height: 2px;
+        background-color: #ccc;
+        margin-top: 0%;
+
+    }
+    
+    @media (max-width: 768px) {
+        .flowchart {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .flowchart-item {
+            width: 120px;
+        }
+        .flowchart-connector {
+            height: 50px;
+            width: 2px; 
+            margin-left: 0%; 
+            transform: translateX(-50%);
+        }
+    }
+    .btn{
+        color: rgb(218, 164, 48);
+        outline-color: azure;
+        border: 2px solid rgb(25, 91, 145);
+    }
+    .btn:hover{
+        color: darkslategray;
+        background-color: lightblue;
+        outline: none;
+        
+    }
+    a{
+        list-style: none;
+        color: azure;
+    }
+     a:hover{
+        color: rgb(218, 164, 48);
+     }
+     ::-webkit-scrollbar {
+        width: 5px; 
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1; 
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #888; 
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555; 
+    }
+    
+</style>
+<div class="container-fluid ">
+    <div class="col-md-2"></div>
+    <div class="col-md-3 text-right" style="margin-left: 6vh;">
+      
+          <div class="right">
+        <button class="btn mt-3" type="button" onclick="ExportToExcel()" style="margin-right: 2vh; margin-left: 5vh;">
+            <i class="fa fa-file-excel"></i> 
+            <br><span style="color: black; font-size: small; font-weight: bold;">Excel</span>
+        </button>
+
+       
+
+        <button class="btn mt-3" type="button" data-toggle="modal" data-target="#excelModal" onclick="excelmodel()">
+            <span><img width="30px" src="{% static 'images/import.png' %}" alt="no img"></span>
+            <br><span style="color: black; font-size: small; font-weight: bold;">Import</span>
+        </button>
+    </div>
+</div>
+        <div class="card radius-15" >
+            <div class="card-body">
+                <div class="card-title">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <h2 class="mb-0 text text-right">All Customers</h2>
+                        </div>
+                        <div class="col-md-2">
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card radius-15 mb-5">
+            <div class="card-body">
+                <div class="row">
+                    <div class=" col-md-3">
+                        <input type="text" id="search" placeholder="Search..." class="form-control text-dark bg-light px-3 py-2" autocomplete="off">
+                    </div>
+                    <div class="col-md-3">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-warning dropdown-toggle px-3 py-2" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Sort
+                            </button>
+                            <div class="dropdown-menu ">
+                                <a class="dropdown-item" href="{% url 'view_customr' %}">All</a>
+                                <a class="dropdown-item" href="{% url 'view_customr_sname' %}">Name</a>
+                                <a class="dropdown-item" href="{% url 'amtcus' %}">Amount</a>
+                
+                
+                            </div>
+                        </div>
+                    </div>
+                        
+                        
+
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3">
+                        
+                        <a class="btn text-center px-3 py-2 " data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        role="button"><i class="fa fa-filter mx-3"></i>
+                        </a>
+                        <div class="dropdown-menu ">
+                            <a class="dropdown-item" href="{% url 'view_customr' %}">All</a>
+                            <a  class="dropdown-item" href="{% url 'active_cust' %}">Active</a>
+                            <a  class="dropdown-item" href="{% url 'inactive_cust' %}">Inactive</a>
+                  
+                        </div>
+                        <a href="{% url 'add_customers' %}" class="btn fa fa-plus text-right px-3 py-2" role="button">
+                            <span class="mt-2">&nbsp;&nbsp;NEW</span>
+                        </a>
+                    </div>
+                </div>
+                <hr>
+                <div class="container-fluid" id="exceltable" id="allcustomer">
+                    <table class="table table-responsive-md mt-4" id="table" >
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>GST Type</th>
+                                <th>GST Number</th> 
+                <th>Email</th>
+               
+                <th>Opening Balance</th>
+                <th>Status</th>
+                <th>Delete</th>
+                <th></th>
+                            </tr>
+                        </thead>
+                        {% for v in vc %}
+                        <tr>
+               
+                         
+                          <td><a href="{% url 'view_one_customer' v.id %}" style="color: white;">{{v.customerName}}</a></td>
+                          <td><a href="{% url 'view_one_customer' v.id %}" style="color: white;">{{v.GSTTreatment}}</a></td>
+                          <td><a href="{% url 'view_one_customer' v.id  %}" style="color: white;" >{{v.GSTIN}}</a></td>
+                          <td><a href="{% url 'view_one_customer' v.id %}" style="color: white;">{{v.customerEmail}}</a></td>
+
+                          <td><a href="{% url 'view_one_customer' v.id  %}" style="color: white;" >{{v.OpeningBalance}}</a></td>
+                          <td><a href="{% url 'view_one_customer' v.id  %}" style="color: white;" >{{v.status}}</a></td>
+                          
+                          <td class="text-right">
+                            <a href="{% url 'delete_customr' v.id %}" 
+                            data-toggle="tooltip" data-placement="top" title="Delete Recurring Invoice">
+                                    <i class="gg-trash text-center text-danger"></i>
+                            </a>
+                        </td>
+                          
+                          
+                         
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                    <div class="modal" id="excelModal" tabindex="-1" role="dialog" aria-labelledby="excelModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="excelModalLabel">Upload File
+                <label for="" style="color: red; font-size: x-small;" >* Refer Downloaded Sheet For Format </label><br></h5>
+                <button type="button" class="btn close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="font-size: x-large;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="excelForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="file" style="color: black;">Choose Excel File for  all customer- </label> <br>
+                        <input type="file" class="form-control-file" id="billfile" name="billfile" accept=".xls, .xlsx"><br><br>
+                        
+
+                       
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="uploadFile()" data-dismiss="modal">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div class="modal" id="excelModal" tabindex="-1" role="dialog" aria-labelledby="excelModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="excelModalLabel">Upload File
+                <label for="" style="color: red; font-size: x-small;" >* Refer Downloaded Sheet For Format </label><br></h5>
+                <button type="button" class="btn close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="font-size: x-large;">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="excelForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="file" style="color: black;">Choose Excel File for Purchase Bill- </label> <br>
+                        <input type="file" class="form-control-file" id="billfile" name="billfile" accept=".xls, .xlsx"><br><br>
+                        
+
+                        <label for="file" style="color: black;">Choose Excel File for Purchase Bill Products- </label> <br>
+                        <input type="file" class="form-control-file" id="prdfile" name="prdfile" accept=".xls, .xlsx"><br>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="uploadFile()" data-dismiss="modal">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+               
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var $rows = $('#table tbody tr');
+    $('#search').keyup(function() {
+      var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+      $rows.show().filter(function() {
+        var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+        return !~text.indexOf(val);
+      }).hide();
+    });
+  });
+
+
+$('.dropdown-toggle').dropdown();
+
+ 
+</script>
+<script>
+    function excelmodel(){
+        const table1 = document.querySelector('#allcustomer');
+        const ws1 = XLSX.utils.table_to_sheet(table1);
+        const wb1 = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb1, ws1, 'Sheet1');
+        XLSX.writeFile(wb1, 'All customer.xlsx');
+
+       
+    }
+</script>
+<script>
+    function ExportToExcel(){
+        const table = document.querySelector('#exceltable');
+        const ws = XLSX.utils.table_to_sheet(table);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        XLSX.writeFile(wb, 'All customer.xlsx');
+    }
+</script>
+<script>
+    function uploadFile() {
+        const form = document.getElementById('excelForm');
+        const formData = new FormData(form);
+        fetch('import_purchase_bill', {
+            method: 'POST',
+            body: formData
+        })
+        .then(data => {
+            swal({
+                title: "Imported !",
+                text: "All customer Import Successfull!",
+                icon: "success",
+                buttons: false,
+            })
+        })
+        .then(response => {
+            setTimeout(function () {
+                location.reload();
+            }, 1250);
+        })
+        .catch(error => {
+            swal({
+                title: "Error !",
+                text: "All customer Import Unuccessfull!",
+                icon: "warning",
+                buttons: false,
+            })
+        });
+    }
+</script>
 {% endblock %}
