@@ -4,7 +4,10 @@
 {% block content %}
 {% load static %}
 
-
+<script src=https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js ></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <link href='https://unpkg.com/css.gg@2.0.0/icons/css/trash.css' rel='stylesheet'>
@@ -129,24 +132,7 @@
     }
     
 </style>
-<div class="container-fluid ">
-    <div class="col-md-2"></div>
-    <div class="col-md-3 text-right" style="margin-left: 6vh;">
-      
-          <div class="right">
-        <button class="btn mt-3" type="button" onclick="ExportToExcel()" style="margin-right: 2vh; margin-left: 5vh;">
-            <i class="fa fa-file-excel"></i> 
-            <br><span style="color: black; font-size: small; font-weight: bold;">Excel</span>
-        </button>
 
-       
-
-        <button class="btn mt-3" type="button" data-toggle="modal" data-target="#excelModal" onclick="excelmodel()">
-            <span><img width="30px" src="{% static 'images/import.png' %}" alt="no img"></span>
-            <br><span style="color: black; font-size: small; font-weight: bold;">Import</span>
-        </button>
-    </div>
-</div>
         <div class="card radius-15" >
             <div class="card-body">
                 <div class="card-title">
@@ -202,6 +188,21 @@
                         </a>
                     </div>
                 </div>
+                <div class="container-fluid ">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-3 text-right" style="margin-left: 6vh;">
+                      
+                          <div class="right">
+                        <button class="btn mt-3" type="button" onclick="ExportToExcel()" style="margin-right: 2vh; margin-left: 5vh;">
+                            <i class="fa fa-file-excel"></i> 
+                            <br><span style="color: black; font-size: small; font-weight: bold;">Excel</span>
+                        </button>
+                     
+                        <button style="width: 2.5rem; background-color: chocolate; color: black; border-radius: 3px; margin-left: 10px;" class="open-button" onclick="openForm()">+</button>
+                
+                        <button class="btn btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#importEstimate" title="IMPORT"><span><img width="22px" src="{% static 'images/import.png' %}" alt="IMPORT"></span></button>
+                    </div>
+                </div>
                 <hr>
                 <div class="container-fluid" id="exceltable" id="allcustomer">
                     <table class="table table-responsive-md mt-4" id="table" >
@@ -229,7 +230,7 @@
 
                           <td><a href="{% url 'view_one_customer' v.id  %}" style="color: white;" >{{v.OpeningBalance}}</a></td>
                           <td><a href="{% url 'view_one_customer' v.id  %}" style="color: white;" >{{v.status}}</a></td>
-                          
+                          <td><a href="{% url 'view_one_customer' v.id  %}" style="color: white;" >{{v.creditlimit}}</a></td>
                           <td class="text-right">
                             <a href="{% url 'delete_customr' v.id %}" 
                             data-toggle="tooltip" data-placement="top" title="Delete Recurring Invoice">
@@ -243,71 +244,93 @@
                         {% endfor %}
                     </tbody>
                     </table>
-                    <div class="modal" id="excelModal" tabindex="-1" role="dialog" aria-labelledby="excelModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="excelModalLabel">Upload File
-                <label for="" style="color: red; font-size: x-small;" >* Refer Downloaded Sheet For Format </label><br></h5>
-                <button type="button" class="btn close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true" style="font-size: x-large;">&times;</span>
-                </button>
+                </div>
             </div>
-            <div class="modal-body">
-                <form id="excelForm" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="file" style="color: black;">Choose Excel File for  all customer- </label> <br>
-                        <input type="file" class="form-control-file" id="billfile" name="billfile" accept=".xls, .xlsx"><br><br>
-                        
+        </div>       
+       
+                
 
-                       
+        
+        <div class="modal fade" id="importEstimate">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                 
+                        <div class="d-flex justify-content-between">
+                            <h3 class="m-3">IMPORT ESTIMATE</h3>
+                            <button type="button" class="btn fs-4" data-bs-dismiss="modal" aria-label="Close"><i class="fa fa-times" aria-hidden="true"></i></button>
+                        </div>
+                        <div class="file_instructions">
+                            <div class="alert alert-danger" role="alert">
+                                <span class="fw-bolder">IMPORTANT:</span>
+                                <p>File should have 2 sheets named 'estimate' & 'items' and column name & order should be in the given formate(Uppercase).</p>
+                                <p class="fw-bolder">Estimate sheet - SLNO*, DATE, NAME*, STATE OF SUPPLY*, DESCRIPTION, SUB TOTAL*, IGST*, CGST*, SGST*, TAX AMOUNT*, ADJUSTMENT, GRAND TOTAL* </p>
+                                <p class="fw-bolder">Items sheet - ESTIMATE NO**, NAME*, HSN*, QUANTITY*, PRICE*, TAX PERCENTAGE*, DISCOUNT, TOTAL* </p>
+                                <p>* All required columns should be filled.</p>
+                                <p>** <b>ESTIMATE NO</b> is <b>SLNO</b> of estimate</p>
+                                <p>State of supply should be '<b>State</b>' or '<b>Other State</b>'. State -> CGST* & SGST*, Other State -> IGST*</p>
+                                <p>Date format should be 'YYYY-MM-DD' or 'DD-MM-YYYY'.</p>
+                            </div>
+                        </div>
+                        <div class="sample_file mb-2">
+                            <a href="" class="fw-bolder">Download Sample File</a>
+                        </div>
+                        <form id="importEstimateForm" action="{% url 'import_purchase_bill' %}" method="POST" class="form" enctype="multipart/form-data">
+                            <form onsubmit="event.preventDefault(); addUnit();" class="form-container" id="unitForm"></form>
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="excel_file" class="form-label">File</label>
+                                <input id="excel_file" class="form-control" type="file" name="excel_file" required>
+                            </div>
+                            <div class="d-flex justify-content-center mt-2">
+                                <input id="submit_import_excel" value="IMPORT" class="btn btn-info bg-gradient" type="submit">
+                            </div>
+                            
+                        </form>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="uploadFile()" data-dismiss="modal">Upload</button>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-</div>
-<div class="modal" id="excelModal" tabindex="-1" role="dialog" aria-labelledby="excelModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="excelModalLabel">Upload File
-                <label for="" style="color: red; font-size: x-small;" >* Refer Downloaded Sheet For Format </label><br></h5>
-                <button type="button" class="btn close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true" style="font-size: x-large;">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="excelForm" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="file" style="color: black;">Choose Excel File for Purchase Bill- </label> <br>
-                        <input type="file" class="form-control-file" id="billfile" name="billfile" accept=".xls, .xlsx"><br><br>
-                        
-
-                        <label for="file" style="color: black;">Choose Excel File for Purchase Bill Products- </label> <br>
-                        <input type="file" class="form-control-file" id="prdfile" name="prdfile" accept=".xls, .xlsx"><br>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="uploadFile()" data-dismiss="modal">Upload</button>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-
+        <div class="form-popup" id="myForm">
+         
                
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+                        <div class="modal-content">  
+                <div class="d-flex justify-content-between">
+                    <h3 class="m-3">IMPORT ESTIMATE</h3>
+                    <button type="button" class="btn fs-4" data-bs-dismiss="modal" aria-label="Close" onclick="closeForm()"><i class="fa fa-times" aria-hidden="true"></i></button>
+                </div>
+                <div class="file_instructions">
+                    <div class="alert alert-danger" role="alert">
+                        <span class="fw-bolder">IMPORTANT:</span>
+                        <p>File should have 2 sheets named 'estimate' & 'items' and column name & order should be in the given formate(Uppercase).</p>
+                        <p class="fw-bolder">Estimate sheet - SLNO*, DATE, NAME*, STATE OF SUPPLY*, DESCRIPTION, SUB TOTAL*, IGST*, CGST*, SGST*, TAX AMOUNT*, ADJUSTMENT, GRAND TOTAL* </p>
+                        <p class="fw-bolder">Items sheet - ESTIMATE NO**, NAME*, HSN*, QUANTITY*, PRICE*, TAX PERCENTAGE*, DISCOUNT, TOTAL* </p>
+                        <p>* All required columns should be filled.</p>
+                        <p>** <b>ESTIMATE NO</b> is <b>SLNO</b> of estimate</p>
+                        <p>State of supply should be '<b>State</b>' or '<b>Other State</b>'. State -> CGST* & SGST*, Other State -> IGST*</p>
+                        <p>Date format should be 'YYYY-MM-DD' or 'DD-MM-YYYY'.</p>
+                    </div>
+                </div>
+                <div class="sample_file mb-2">
+                    <a href="" class="fw-bolder">Download Sample File</a>
+                </div>
+               
+            <form onsubmit="event.preventDefault(); addUnit();" class="form-container" id="unitForm">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="excel_file" class="form-label">File</label>
+                    <input id="excel_file" class="form-control" type="file" name="excel_file" required>
+                </div>
+                <div class="d-flex justify-content-center mt-2">
+                    <input id="submit_import_excel" value="IMPORT" class="btn btn-info bg-gradient" type="submit">
+                </div>
+                
+              
+            </form>
+          </div>
+          
+          
+            
+      
 <script>
   $(document).ready(function() {
     var $rows = $('#table tbody tr');
@@ -346,34 +369,59 @@ $('.dropdown-toggle').dropdown();
     }
 </script>
 <script>
-    function uploadFile() {
-        const form = document.getElementById('excelForm');
-        const formData = new FormData(form);
-        fetch('import_purchase_bill', {
-            method: 'POST',
-            body: formData
-        })
-        .then(data => {
-            swal({
-                title: "Imported !",
-                text: "All customer Import Successfull!",
-                icon: "success",
-                buttons: false,
-            })
-        })
-        .then(response => {
-            setTimeout(function () {
-                location.reload();
-            }, 1250);
-        })
-        .catch(error => {
-            swal({
-                title: "Error !",
-                text: "All customer Import Unuccessfull!",
-                icon: "warning",
-                buttons: false,
-            })
-        });
-    }
+    function addUnit() {
+    // Get the form and form data
+    let unitForm = document.getElementById("unitForm");
+    let formData = new FormData(unitForm);
+
+    // Send the form data through AJAX
+    $.ajax({
+        url: "{% url 'import_purchase_bill' %}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            const unitName = response.unit_name;
+            const unitId = response.unit_id; // Assume the server returns the unit ID
+
+            // Handle the success response
+            console.log(response);
+
+            // Get the dropdown element
+            const dropdown = document.getElementById("unit");
+
+            // Create and add the new unit option
+            const newUnitOption = document.createElement("option");
+            newUnitOption.value = unitId;
+            newUnitOption.text = unitName;
+
+            // Add the new unit option to the dropdown
+            dropdown.add(newUnitOption);
+
+            // Select the newly added unit option to display it as the current selection
+            newUnitOption.selected = true;
+
+            // Close the form and perform any other actions
+            closeForm();
+        },
+        error: function (error) {
+            // Handle the error response
+            console.log(error);
+        }
+    });
+}
+
+    function openForm() {
+    let formContainer = document.getElementById("myForm");
+    formContainer.style.display = "block";
+}
+
+function closeForm() {
+    let formContainer = document.getElementById("myForm");
+    formContainer.style.display = "none";
+}
+
 </script>
+</section>
 {% endblock %}
