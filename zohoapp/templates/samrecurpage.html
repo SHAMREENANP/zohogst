@@ -397,7 +397,7 @@
               <div class="col-sm-10">
                 <select style="width: 50%; height: 35px;" name="method">
                   <option value="cash">Cash</option>
-                  <option value="check">Cheque</option>
+                  <option value="Cheque">Cheque</option>
                   {% for b in banks %}
 
                   <option value="{{ b.name }}">{{ b.name }}</option>
@@ -1358,7 +1358,7 @@
                     <label for="option1">Taxable</label>
                   </div>
                   <div class="radio_opt mx-4 mt-2">
-                    <input type="radio" id="item-tax2" name="radioOption1" value="Tax-exempt">
+                    <input type="radio" id="item-tax2" name="radioOption1" value="Tax Exempt">
                     <label for="option2">Tax-exempt</label>
                   </div>
                 </div>
@@ -2049,6 +2049,8 @@ $.ajax({
       success: function (response) {
         term_name = response.terms
         document.getElementById("crt_term").innerHTML = term_name
+        document.getElementById("crt_term").value = response.day
+
         document.getElementById("modalPayment").reset();
         // reloadPayment();
       },
@@ -2094,12 +2096,12 @@ $.ajax({
       itemtype = $('#individual').val();
     }
 
-    if ($('input[name="radioOption2"]:checked').val() == 'Taxable') {
-      inte = $('#item-tax3').val();
+    if ($('input[name="radioOption1"]:checked').val() == 'Taxable') {
+      inte = $('#item-tax1').val();
 
     }
     else {
-      inte = $('#item-tax4').val();
+      inte = $('#item-tax2').val();
     }
 
 
@@ -2158,7 +2160,7 @@ $.ajax({
 
         // reloadcustomer();
         $.ajax({
-          url: "{% url 'customer_dropdown' %}",
+          url: "{% url 'customer_dropdownrecur' %}",
           type: "GET",
           dataType: "json",
           data: $(this).serialize(),
@@ -2227,7 +2229,7 @@ $.ajax({
     $.ajax({
 
       type: 'POST',
-      url: "{% url 'recurbills_item' %}",
+      url: "{% url 'recuritem' %}",
 
       data: {
         type: itemtype,
@@ -2261,7 +2263,7 @@ $.ajax({
 
   function reloadItem() {
     $.ajax({
-      url: "{% url 'item_dropdown' %}",
+      url: "{% url 'recur_item_dropdown' %}",
       type: "GET",
       dataType: "json",
       data: $(this).serialize(),
@@ -2269,12 +2271,13 @@ $.ajax({
 
       success: function (data) {
         var dropdown = $('.itm');
-        var dropdown1 = $('.itmm');
         dropdown.empty();
-        dropdown1.empty();
         $.each(data, function (key, value) {
-          dropdown.append($('<option class="text-dark"></option>').attr('value', key).text(value[0]).val(value[1]));
-          dropdown1.append($('<option class="text-dark"></option>').attr('value', key).text(value[0]).val(value[1]));
+        console.log(key)
+        console.log(value[0])
+        console.log(value[1])
+
+          dropdown.append($('<option class="text-dark"></option>').attr('value', key).text(value).val(value));
         });
 
       },
