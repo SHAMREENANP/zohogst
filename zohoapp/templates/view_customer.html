@@ -132,7 +132,57 @@
     }
     
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+
+
+<style>
+  .modal{
+      z-index: 9999;
+      overflow: scroll;
+    }
+
+
+.dropdown-item:hover{
+    color: rgb(226, 149, 5);
+}
+
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  #tr_data:hover{
+    background-color: #757575;
+  }
+</style>
+
+
+<div style="top: 7rem;">
+
+  <section>
         <div class="card radius-15" >
             <div class="card-body">
                 <div class="card-title">
@@ -201,6 +251,11 @@
                         <button style="width: 2.5rem; background-color: chocolate; color: black; border-radius: 3px; margin-left: 10px;" class="open-button" onclick="openForm()">+</button>
                 
                         <button class="btn btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#importEstimate" title="IMPORT"><span><img width="22px" src="{% static 'images/import.png' %}" alt="IMPORT"></span></button>
+                        <label for="file-input" title="impot excel" class="btn p-0 ps-2 pe-2 ms-2"
+                        type="button"><span><img width="25px" src="{% static 'assets/import.png' %}"
+                                alt="no img"></span></label>
+                    <input id="file-input" type="file" name="file" style="display:none;"
+                        onchange="uploadFile()">
                     </div>
                 </div>
                 <hr>
@@ -423,5 +478,41 @@ function closeForm() {
 }
 
 </script>
+
 </section>
+<script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Check if the cookie name matches the CSRF cookie name
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function uploadFile() {
+        const fileInput = document.getElementById("file-input");
+        const file = fileInput.files[0];
+        const csrfToken = getCookie('csrftoken')
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        fetch("/import_excel", {
+            method: "POST",
+            headers: { 'X-CSRFToken': csrfToken },
+            body: formData
+        })
+        window.location.href = '/view_customr';
+
+
+    }
+</script>
+
 {% endblock %}
